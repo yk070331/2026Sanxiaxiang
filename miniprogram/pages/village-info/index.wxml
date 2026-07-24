@@ -1,0 +1,49 @@
+<!--pages/village-info/index.wxml - 村情基础信息页-->
+<view class="container">
+  <!-- 村落名称 -->
+  <view class="info-hero">
+    <text class="info-village-name">🏘️ {{info.basic.name}}</text>
+    <text class="info-village-sub">{{info.basic.administrative}}</text>
+  </view>
+
+  <!-- 分类 Tab -->
+  <scroll-view class="section-tabs" scroll-x="true" enable-flex>
+    <view
+      class="section-tab {{currentSection === section.id ? 'active' : ''}}"
+      wx:for="{{sections}}"
+      wx:key="id"
+      wx:for-item="section"
+      data-id="{{section.id}}"
+      data-name="{{section.name}}"
+      bindtap="onSectionChange"
+    >
+      <text class="section-tab-icon">{{section.icon}}</text>
+      <text class="section-tab-name">{{section.name}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 内容区域 -->
+  <view class="info-content">
+    <view class="info-card">
+      <view class="info-card-header">
+        <view class="label-dot"></view>
+        <text class="info-card-title">{{currentSectionName}}</text>
+      </view>
+
+      <!-- 键值对表格 -->
+      <view class="info-table">
+        <view class="info-row" wx:for="{{rows}}" wx:key="label">
+          <text class="info-row-label">{{item.label}}</text>
+          <text class="info-row-value">{{item.value}}</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{rows.length === 0}}">
+        <text class="empty-text">暂无数据</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-area-bottom"></view>
+</view>

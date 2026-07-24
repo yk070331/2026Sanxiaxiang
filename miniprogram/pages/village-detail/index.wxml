@@ -1,0 +1,143 @@
+<!--pages/village-detail/index.wxml - 村落详情页-->
+<view class="container {{careMode ? 'care-mode' : ''}}">
+  <view class="network-banner" wx:if="{{!isOnline}}">
+    当前为弱网/离线状态：文字与已缓存内容可浏览，在线地图可能受影响
+  </view>
+  <!-- 头部村落信息 -->
+  <view class="village-hero">
+    <view class="hero-bg"></view>
+    <view class="hero-content">
+      <view class="hero-toolbar">
+        <button class="care-toggle" bindtap="onToggleCare">
+          {{careMode ? '标准模式' : '关怀模式'}}
+        </button>
+      </view>
+      <text class="hero-name">{{village.name}}</text>
+      <view class="hero-tags">
+        <text class="tag tag-red">{{village.town}}</text>
+        <text class="tag tag-gold">红色美丽村庄</text>
+      </view>
+      <text class="hero-summary">{{village.summary}}</text>
+      <view class="hero-stats" wx:if="{{village.population}}">
+        <view class="hero-stat">
+          <text class="hero-stat-num">{{village.population}}人</text>
+          <text class="hero-stat-label">人口</text>
+        </view>
+        <view class="hero-stat">
+          <text class="hero-stat-num">{{village.area}}</text>
+          <text class="hero-stat-label">面积</text>
+        </view>
+        <view class="hero-stat" wx:if="{{village.partyMembers}}">
+          <text class="hero-stat-num">{{village.partyMembers}}人</text>
+          <text class="hero-stat-label">党员</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 当前距离与时间估算 -->
+  <view class="location-card">
+    <view class="location-header">
+      <view>
+        <text class="location-title">📍 从当前位置到乔林村</text>
+        <text class="location-message">{{locationMessage}}</text>
+      </view>
+      <button class="location-button" bindtap="onLocateMe">
+        {{locating ? '定位中…' : '测算距离'}}
+      </button>
+    </view>
+    <view class="location-stats">
+      <view class="location-stat">
+        <text class="location-value">{{distanceText}}</text>
+        <text class="location-label">距离</text>
+      </view>
+      <view class="location-stat">
+        <text class="location-value">{{walkTimeText}}</text>
+        <text class="location-label">预计步行</text>
+      </view>
+      <view class="location-stat">
+        <text class="location-value">{{driveTimeText}}</text>
+        <text class="location-label">预计驾车</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 四个入口卡片网格 -->
+  <view class="entry-grid">
+    <view class="entry-card entry-red" bindtap="onGoToVillageInfo">
+      <text class="entry-icon">📋</text>
+      <text class="entry-title">村情信息</text>
+      <text class="entry-desc">耕地·林地·水源台账</text>
+    </view>
+    <view class="entry-card entry-orange" bindtap="onGoToStory" data-id="{{relatedStories[0].id}}">
+      <text class="entry-icon">📖</text>
+      <text class="entry-title">红色故事</text>
+      <text class="entry-desc">革命往事·口述历史</text>
+    </view>
+    <view class="entry-card entry-green" bindtap="onGoToGallery">
+      <text class="entry-icon">📷</text>
+      <text class="entry-title">实景相册</text>
+      <text class="entry-desc">旧址·古村·山水</text>
+    </view>
+    <view class="entry-card entry-blue" bindtap="onGoToRouteRecommend">
+      <text class="entry-icon">🚩</text>
+      <text class="entry-title">路线推荐</text>
+      <text class="entry-desc">30分钟·1小时·半日</text>
+    </view>
+  </view>
+
+  <!-- 分隔线 -->
+  <view class="section-divider">
+    <view class="divider-line"></view>
+    <text class="divider-text">村内红色旧址</text>
+    <view class="divider-line"></view>
+  </view>
+
+  <!-- 6处红色旧址列表 -->
+  <view class="sites-list" wx:if="{{village.sites}}">
+    <view
+      class="site-card"
+      wx:for="{{village.sites}}"
+      wx:key="id"
+      wx:for-item="site"
+      data-id="{{site.id}}"
+      bindtap="onGoToSite"
+    >
+      <view class="site-order">
+        <text class="order-num">{{index + 1}}</text>
+      </view>
+      <view class="site-info">
+        <text class="site-name">{{site.name}}</text>
+        <text class="site-desc">{{site.desc}}</text>
+      </view>
+      <view class="site-actions">
+        <view class="site-nav-btn" data-id="{{site.id}}" catchtap="onNavigate">
+          <text>🧭 导航</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 研学路线入口横幅 -->
+  <view class="tour-banner" bindtap="onGoToStudyTour">
+    <view class="tour-banner-content">
+      <text class="tour-banner-icon">🚩</text>
+      <view class="tour-banner-text">
+        <text class="tour-banner-title">2.3公里红色研学路线</text>
+        <text class="tour-banner-desc">串联6处红色旧址 · 预计2小时 · 轻松徒步</text>
+      </view>
+    </view>
+    <text class="tour-banner-arrow">→</text>
+  </view>
+
+  <!-- 底部导航按钮 -->
+  <view class="bottom-nav">
+    <view class="navigation-grid">
+      <button class="btn-primary" bindtap="onNavigate">🧭 导航到{{village.name}}</button>
+      <button class="btn-outline" bindtap="onNavigateToReservoir">💧 查看乔林水库</button>
+    </view>
+  </view>
+
+  <!-- 安全区域占位 -->
+  <view class="safe-area-bottom"></view>
+</view>

@@ -1,0 +1,83 @@
+<!--pages/site-detail/index.wxml - 红色旧址详情页-->
+<view class="container">
+  <!-- 头图区域 -->
+  <view class="site-hero">
+    <view class="hero-overlay"></view>
+    <view class="hero-text">
+      <view class="hero-badge">
+        <text wx:if="{{source === 'landmark'}}">★ 市级核心红色地标</text>
+        <text wx:else>🔴 {{site.villageName}}·红色旧址</text>
+      </view>
+      <text class="hero-title">{{site.name}}</text>
+      <text class="hero-subtitle" wx:if="{{site.summary}}">{{site.summary}}</text>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="site-content">
+    <!-- 详细介绍 -->
+    <view class="content-section">
+      <view class="section-label">
+        <view class="label-dot"></view>
+        <text>历史沿革</text>
+      </view>
+      <text class="content-text">{{site.desc || '暂无详细介绍，实地采集资料整理中。'}}</text>
+    </view>
+
+    <!-- 关联红色故事 -->
+    <view class="content-section" wx:if="{{relatedStories.length > 0}}">
+      <view class="section-label">
+        <view class="label-dot"></view>
+        <text>关联红色故事</text>
+      </view>
+      <view class="related-stories">
+        <view
+          class="story-link"
+          wx:for="{{relatedStories}}"
+          wx:key="id"
+          wx:for-item="story"
+          data-id="{{story.id}}"
+          bindtap="onGoToStory"
+        >
+          <view class="story-link-left">
+            <text class="story-link-icon">📖</text>
+            <view class="story-link-info">
+              <text class="story-link-title">{{story.title}}</text>
+              <text class="story-link-author">{{story.author}}</text>
+            </view>
+          </view>
+          <text class="story-link-arrow">→</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实景影像入口 -->
+    <view class="content-section">
+      <view class="section-label">
+        <view class="label-dot"></view>
+        <text>实景影像</text>
+      </view>
+      <view class="gallery-entry" bindtap="onGoToGallery">
+        <view class="gallery-grid">
+          <view class="gallery-placeholder">
+            <text class="placeholder-icon">📷</text>
+            <text class="placeholder-text">点击查看革命旧址实拍影像</text>
+          </view>
+        </view>
+        <view class="gallery-more">
+          <text>进入实景相册 →</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-bar safe-area-bottom">
+    <button class="btn-outline" wx:if="{{source === 'village_site' && site.villageId}}" bindtap="onGoToVillage">
+      ← 返回{{site.villageName}}
+    </button>
+    <button class="btn-primary" bindtap="onNavigate">
+      {{canNavigate ? '🧭 导航到此地' : '📍 坐标待核验'}}
+    </button>
+  </view>
+</view>

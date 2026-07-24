@@ -1,0 +1,222 @@
+<!--pages/index/index.wxml - 红韵乔林地图主页-->
+<view class="page-container">
+  <!-- 全屏地图 -->
+  <map
+    id="hongyunMap"
+    class="full-map"
+    latitude="{{latitude}}"
+    longitude="{{longitude}}"
+    scale="{{scale}}"
+    show-compass="{{showCompass}}"
+    enable-zoom="{{enableZoom}}"
+    enable-scroll="{{enableScroll}}"
+    enable-rotate="{{enableRotate}}"
+    enable-overlooking="{{enableOverlooking}}"
+    show-location="{{true}}"
+    polygons="{{[]}}"
+    markers="{{markers}}"
+    bindmarkertap="onMarkerTap"
+    bindtap="onMapTap"
+    bindregionchange="onRegionChange"
+  >
+  </map>
+
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="nav-content">
+      <view class="nav-title-group">
+        <text class="nav-title">红韵乔林</text>
+        <text class="nav-subtitle">井冈山·红色文旅地图</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索与图层筛选 -->
+  <view class="search-panel" style="top: {{statusBarHeight + 58}}px;">
+    <view class="search-box">
+      <text class="search-icon">🔎</text>
+      <input
+        class="search-input"
+        value="{{searchKeyword}}"
+        placeholder="搜索村名、旧址或生态资源"
+        bindinput="onSearchInput"
+      />
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onClearSearch">×</text>
+    </view>
+    <scroll-view class="layer-tabs" scroll-x="true" enable-flex>
+      <view
+        class="layer-tab {{activeLayer === item.id ? 'active' : ''}}"
+        wx:for="{{layerOptions}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onLayerChange"
+      >
+        {{item.name}}
+      </view>
+    </scroll-view>
+    <view class="offline-tip" wx:if="{{!isOnline}}">
+      当前网络不可用：文字内容仍可浏览，在线地图可能无法加载
+    </view>
+  </view>
+
+  <!-- 右下角控制按钮组 -->
+  <view class="control-buttons">
+    <!-- 定位游客 -->
+    <view class="ctrl-btn" bindtap="onLocateMe">
+      <view class="ctrl-btn-icon">🧭</view>
+      <text class="ctrl-btn-text">我的位置</text>
+    </view>
+    <!-- 定位乔林村 -->
+    <view class="ctrl-btn ctrl-btn-qiaolin" bindtap="onLocateQiaolin">
+      <view class="ctrl-btn-icon">📍</view>
+      <text class="ctrl-btn-text">乔林村</text>
+    </view>
+    <!-- 复位 -->
+    <view class="ctrl-btn ctrl-btn-reset" bindtap="onResetMap">
+      <view class="ctrl-btn-icon">🗺️</view>
+      <text class="ctrl-btn-text">全域</text>
+    </view>
+    <!-- 图例切换 -->
+    <view class="ctrl-btn ctrl-btn-legend" bindtap="onToggleLegend">
+      <view class="ctrl-btn-icon">ℹ️</view>
+    </view>
+  </view>
+
+  <!-- 图例面板 -->
+  <view class="legend-panel {{showLegend ? 'legend-show' : 'legend-hide'}}">
+    <view class="legend-item">
+      <view class="legend-icon legend-star">★</view>
+      <text class="legend-text">市级核心红色地标</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-icon legend-village">🏘️</view>
+      <text class="legend-text">红色村落</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-icon">💧</view>
+      <text class="legend-text">水库与自然点位</text>
+    </view>
+  </view>
+
+  <!-- 底部弹出卡片 -->
+  <view class="popup-mask {{showPopup ? 'mask-show' : ''}}" bindtap="onClosePopup"></view>
+  <view class="popup-panel {{showPopup ? 'panel-show' : ''}}">
+    <!-- 拖拽指示条 -->
+    <view class="popup-handle">
+      <view class="handle-bar"></view>
+    </view>
+
+    <!-- 地标类型弹窗 -->
+    <block wx:if="{{popupType === 'landmark' && popupData}}">
+      <view class="popup-header landmark-header">
+        <view class="popup-badge badge-red">
+          <text>★ 红色地标</text>
+        </view>
+        <text class="popup-title">{{popupData.name}}</text>
+        <text class="popup-summary">{{popupData.summary}}</text>
+      </view>
+      <view class="popup-body">
+        <text class="popup-desc">{{popupData.desc}}</text>
+      </view>
+      <view class="popup-footer">
+        <button class="btn-primary btn-full" data-id="{{popupData.id}}" bindtap="onGoToLandmarkDetail">
+          查看详情 → 革命往事·实景影像
+        </button>
+      </view>
+    </block>
+
+    <!-- 村落类型弹窗 -->
+    <block wx:if="{{popupType === 'village' && popupData}}">
+      <view class="popup-header village-header">
+        <view class="popup-badge badge-gold">
+          <text>🏘️ {{popupData.town}}</text>
+        </view>
+        <text class="popup-title">{{popupData.name}}</text>
+        <text class="popup-summary">{{popupData.summary}}</text>
+      </view>
+
+      <!-- 村落快速信息 -->
+      <view class="popup-body">
+        <view class="village-quick-stats" wx:if="{{popupData.population}}">
+          <view class="stat-item">
+            <text class="stat-num">{{popupData.population}}</text>
+            <text class="stat-label">人口</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-num">{{popupData.area}}</text>
+            <text class="stat-label">面积</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item" wx:if="{{popupData.partyMembers}}">
+            <text class="stat-num">{{popupData.partyMembers}}</text>
+            <text class="stat-label">党员</text>
+          </view>
+        </view>
+
+        <!-- 6处红色旧址快捷入口 -->
+        <view class="quick-sites" wx:if="{{popupData.sites}}">
+          <text class="quick-sites-title">🔴 村内红色旧址（{{popupData.sites.length}}处）</text>
+          <view class="site-chips">
+            <view
+              class="site-chip"
+              wx:for="{{popupData.sites}}"
+              wx:key="id"
+              wx:for-item="site"
+              data-id="{{site.id}}"
+              bindtap="onGoToVillageSite"
+            >
+              <text class="chip-index">{{index + 1}}</text>
+              <view class="chip-info">
+                <text class="chip-name">{{site.name}}</text>
+                <text class="chip-desc">{{site.desc}}</text>
+              </view>
+              <text class="chip-arrow">→</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 研学路线一键导航 -->
+        <view class="tour-quick-entry" wx:if="{{popupData.id === 'village_1'}}">
+          <view class="tour-card">
+            <view class="tour-card-left">
+              <text class="tour-card-icon">🚩</text>
+              <view class="tour-card-info">
+                <text class="tour-card-title">2.3公里研学路线</text>
+                <text class="tour-card-desc">串联6处红色旧址 · 约2小时</text>
+              </view>
+            </view>
+            <button class="btn-gold tour-nav-btn" bindtap="onGoToStudyTour">
+              一键导航
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <view class="popup-footer">
+        <button class="btn-primary btn-full" data-id="{{popupData.id}}" bindtap="onGoToVillageDetail">
+          进入{{popupData.name}}详情页 → 全方位了解
+        </button>
+      </view>
+    </block>
+
+    <!-- 自然与公共点位弹窗 -->
+    <block wx:if="{{popupType === 'place' && popupData}}">
+      <view class="popup-header landmark-header">
+        <view class="popup-badge badge-gold">
+          <text>💧 自然点位</text>
+        </view>
+        <text class="popup-title">{{popupData.name}}</text>
+        <text class="popup-summary">{{popupData.summary}}</text>
+      </view>
+      <view class="popup-body">
+        <text class="popup-desc">{{popupData.desc}}</text>
+      </view>
+      <view class="popup-footer">
+        <button class="btn-primary btn-full" bindtap="onOpenPopupLocation">
+          在腾讯地图中查看位置
+        </button>
+      </view>
+    </block>
+  </view>
+</view>

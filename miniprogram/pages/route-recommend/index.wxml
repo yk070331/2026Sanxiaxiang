@@ -1,0 +1,51 @@
+<!-- pages/route-recommend/index.wxml -->
+<view class="container {{careMode ? 'care-mode' : ''}}">
+  <view class="recommend-hero">
+    <view>
+      <text class="hero-title">为你推荐研学路线</text>
+      <text class="hero-desc">选择时间、主题和游客类型，系统将匹配最合适的预设路线</text>
+    </view>
+    <button class="care-toggle" bindtap="onToggleCare">
+      {{careMode ? '标准模式' : '关怀模式'}}
+    </button>
+  </view>
+
+  <view class="option-card" wx:for="{{optionGroups}}" wx:key="id" wx:for-item="group">
+    <text class="option-title">{{group.name}}</text>
+    <view class="option-list">
+      <view
+        class="option-chip {{option.selected ? 'selected' : ''}}"
+        wx:for="{{group.options}}"
+        wx:key="value"
+        wx:for-item="option"
+        data-group="{{group.id}}"
+        data-value="{{option.value}}"
+        bindtap="onOptionTap"
+      >
+        {{option.name}}
+      </view>
+    </view>
+  </view>
+
+  <view class="result-card" wx:if="{{recommendedRoute}}">
+    <text class="result-label">推荐路线</text>
+    <text class="result-title">{{recommendedRoute.title}}</text>
+    <text class="result-summary">{{recommendedRoute.summary}}</text>
+    <view class="result-stats">
+      <text>{{recommendedRoute.duration}}</text>
+      <text>{{recommendedRoute.distance}}</text>
+      <text>{{recommendedRoute.storyCount}}个故事</text>
+      <text>{{recommendedRoute.difficulty}}</text>
+    </view>
+    <view class="stop-list">
+      <view class="stop-item" wx:for="{{recommendedRoute.stopNames}}" wx:key="*this">
+        <text class="stop-index">{{index + 1}}</text>
+        <text class="stop-name">{{item}}</text>
+      </view>
+    </view>
+    <button class="btn-primary btn-full" bindtap="onUseRoute">使用这条路线</button>
+    <text class="coordinate-note">旧址导航将在收到腾讯地图分享点并核验后启用。</text>
+  </view>
+
+  <view class="safe-area-bottom"></view>
+</view>

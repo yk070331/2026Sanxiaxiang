@@ -1,0 +1,81 @@
+<!--pages/photo-gallery/index.wxml - 实景相册页-->
+<view class="container">
+  <!-- 分类筛选 -->
+  <scroll-view class="category-bar" scroll-x="true" enable-flex>
+    <view
+      class="category-item {{currentCategory === item.id ? 'active' : ''}}"
+      wx:for="{{categories}}"
+      wx:key="id"
+      wx:for-item="item"
+      data-id="{{item.id}}"
+      bindtap="onCategoryChange"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 照片瀑布流/网格 -->
+  <view class="photo-grid">
+    <view
+      class="photo-item"
+      wx:for="{{photos}}"
+      wx:key="id"
+      wx:for-item="photo"
+      data-src="{{photo.src}}"
+      data-index="{{index}}"
+      bindtap="onPhotoTap"
+    >
+      <view class="photo-image">
+        <view class="photo-placeholder">
+          <text class="photo-emoji">{{photo.category === 'revolutionary' ? '🏛️' : (photo.category === 'village' ? '🏘️' : '🌿')}}</text>
+        </view>
+        <view class="photo-category-tag">
+          <text class="tag tag-red" wx:if="{{photo.category === 'revolutionary'}}">{{photo.categoryName}}</text>
+          <text class="tag tag-gold" wx:elif="{{photo.category === 'village'}}">{{photo.categoryName}}</text>
+          <text class="tag tag-green" wx:else>{{photo.categoryName}}</text>
+        </view>
+      </view>
+      <view class="photo-info">
+        <text class="photo-title">{{photo.title}}</text>
+        <text class="photo-desc">{{photo.desc}}</text>
+        <text class="photo-date">{{photo.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{photos.length === 0}}">
+    <text class="empty-icon">📷</text>
+    <text class="empty-text">实景照片采集中，敬请期待</text>
+  </view>
+
+  <!-- 大图预览弹窗 -->
+  <view class="preview-mask {{showPreview ? 'show' : ''}}" bindtap="onClosePreview">
+    <view class="preview-container" catchtap="onStopPropagation">
+      <view class="preview-header">
+        <text class="preview-count">{{previewIndex + 1}} / {{previewPhotos.length}}</text>
+        <view class="preview-close" bindtap="onClosePreview">
+          <text>✕</text>
+        </view>
+      </view>
+      <swiper
+        class="preview-swiper"
+        current="{{previewIndex}}"
+        bindchange="onPreviewChange"
+        indicator-dots="{{false}}"
+      >
+        <swiper-item wx:for="{{previewPhotos}}" wx:key="*this" wx:for-item="src">
+          <view class="preview-image-wrapper">
+            <image class="preview-image" src="{{src}}" mode="aspectFit"></image>
+          </view>
+        </swiper-item>
+      </swiper>
+      <view class="preview-info" wx:if="{{photos[previewIndex]}}">
+        <text class="preview-title">{{photos[previewIndex].title}}</text>
+        <text class="preview-desc">{{photos[previewIndex].desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-area-bottom"></view>
+</view>

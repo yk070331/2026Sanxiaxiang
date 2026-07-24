@@ -1,0 +1,519 @@
+/**pages/index/index.wxss - 地图主页样式**/
+
+.page-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ========== 全屏地图 ========== */
+.full-map {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* ========== 顶部导航栏 ========== */
+.nav-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: linear-gradient(180deg, rgba(139, 0, 0, 0.92) 0%, rgba(139, 0, 0, 0) 100%);
+  padding: 0 28rpx 28rpx;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 4rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+.nav-subtitle {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4rpx;
+  letter-spacing: 2rpx;
+}
+
+/* ========== 搜索与图层筛选 ========== */
+.search-panel {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  z-index: 11;
+}
+
+.search-box {
+  height: 76rpx;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 20rpx;
+  padding: 0 22rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 18rpx rgba(0, 0, 0, 0.14);
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 27rpx;
+  color: #222;
+}
+
+.search-clear {
+  width: 48rpx;
+  text-align: center;
+  color: #888;
+  font-size: 38rpx;
+}
+
+.layer-tabs {
+  margin-top: 12rpx;
+  white-space: nowrap;
+}
+
+.layer-tab {
+  display: inline-block;
+  padding: 10rpx 22rpx;
+  margin-right: 10rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.95);
+  color: #555;
+  font-size: 23rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.layer-tab.active {
+  background: #CC0000;
+  color: #FFFFFF;
+}
+
+.offline-tip {
+  margin-top: 10rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 243, 205, 0.96);
+  color: #7A5500;
+  font-size: 21rpx;
+}
+
+/* ========== 控制按钮组 ========== */
+.control-buttons {
+  position: absolute;
+  right: 24rpx;
+  bottom: 280rpx;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.ctrl-btn {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.ctrl-btn:active {
+  transform: scale(0.92);
+}
+
+.ctrl-btn-qiaolin {
+  background: linear-gradient(135deg, #CC0000, #E83030);
+  width: 108rpx;
+  height: 108rpx;
+  box-shadow: 0 6rpx 20rpx rgba(204, 0, 0, 0.4);
+}
+
+.ctrl-btn-icon {
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.ctrl-btn-text {
+  font-size: 18rpx;
+  color: #333;
+  margin-top: 2rpx;
+}
+
+.ctrl-btn-qiaolin .ctrl-btn-text {
+  color: #fff;
+  font-weight: 600;
+  font-size: 20rpx;
+}
+
+/* ========== 图例面板 ========== */
+.legend-panel {
+  position: absolute;
+  left: 24rpx;
+  bottom: 300rpx;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  padding: 20rpx 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.legend-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.legend-hide {
+  opacity: 0;
+  transform: translateY(20rpx);
+  pointer-events: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.legend-icon {
+  font-size: 32rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.legend-star {
+  color: #CC0000;
+}
+
+.legend-village {
+  font-size: 28rpx;
+}
+
+.legend-text {
+  font-size: 24rpx;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* ========== 底部弹窗 ========== */
+.popup-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.mask-show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 21;
+  background: #FFFFFF;
+  border-radius: 32rpx 32rpx 0 0;
+  max-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow: hidden;
+}
+
+.panel-show {
+  transform: translateY(0);
+}
+
+.popup-handle {
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0 10rpx;
+}
+
+.handle-bar {
+  width: 72rpx;
+  height: 8rpx;
+  background: #DDD;
+  border-radius: 4rpx;
+}
+
+/* 弹窗头部 */
+.popup-header {
+  padding: 24rpx 36rpx 20rpx;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.landmark-header {
+  background: linear-gradient(180deg, #FFF5F5, #FFFFFF);
+}
+
+.village-header {
+  background: linear-gradient(180deg, #FFFCF5, #FFFFFF);
+}
+
+.popup-badge {
+  display: inline-block;
+  padding: 6rpx 18rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.badge-red {
+  background: #FFE8E8;
+  color: #CC0000;
+}
+
+.badge-gold {
+  background: #FFF3D6;
+  color: #B8860B;
+}
+
+.popup-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin-bottom: 8rpx;
+}
+
+.popup-summary {
+  display: block;
+  font-size: 26rpx;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* 弹窗内容 */
+.popup-body {
+  padding: 24rpx 36rpx;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 35vh;
+}
+
+.popup-desc {
+  font-size: 28rpx;
+  color: #444;
+  line-height: 1.8;
+}
+
+/* 村落统计数据 */
+.village-quick-stats {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #FAFAFA;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.stat-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #CC0000;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 44rpx;
+  background: #E8E8E8;
+}
+
+/* 旧址快捷入口 */
+.quick-sites {
+  margin-bottom: 24rpx;
+}
+
+.quick-sites-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.site-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.site-chip {
+  display: flex;
+  align-items: center;
+  background: #FFF8F0;
+  border-radius: 14rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid #F0E0D0;
+  transition: background 0.2s;
+}
+
+.site-chip:active {
+  background: #FFF0E0;
+}
+
+.chip-index {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #CC0000;
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chip-info {
+  flex: 1;
+  margin-left: 16rpx;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chip-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-desc {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 2rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-arrow {
+  font-size: 28rpx;
+  color: #CC0000;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}
+
+/* 研学路线快捷卡片 */
+.tour-quick-entry {
+  margin-bottom: 16rpx;
+}
+
+.tour-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFF8E8, #FFF0D0);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 2rpx solid #F0D060;
+}
+
+.tour-card-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.tour-card-icon {
+  font-size: 44rpx;
+  margin-right: 16rpx;
+}
+
+.tour-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #8B4513;
+}
+
+.tour-card-desc {
+  font-size: 22rpx;
+  color: #B8860B;
+  margin-top: 4rpx;
+}
+
+.tour-nav-btn {
+  padding: 16rpx 28rpx !important;
+  font-size: 26rpx !important;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+/* 弹窗底部 */
+.popup-footer {
+  padding: 20rpx 36rpx;
+  padding-bottom: calc(20rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.btn-full {
+  width: 100%;
+}

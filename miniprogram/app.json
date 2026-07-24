@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/village-detail/index",
+    "pages/site-detail/index",
+    "pages/red-stories/index",
+    "pages/photo-gallery/index",
+    "pages/study-tour/index",
+    "pages/route-recommend/index",
+    "pages/village-info/index"
+  ],
+  "window": {
+    "backgroundColor": "#8B0000",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#CC0000",
+    "navigationBarTitleText": "红韵乔林",
+    "navigationBarTextStyle": "white"
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于地图导航展示"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

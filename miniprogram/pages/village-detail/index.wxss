@@ -1,0 +1,358 @@
+/**pages/village-detail/index.wxss**/
+
+.container {
+  background: #FFF8F0;
+  min-height: 100vh;
+}
+
+/* ===== 顶部村落Hero ===== */
+.village-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(160deg, #8B0000 0%, #CC0000 40%, #E83030 100%);
+}
+
+.hero-content {
+  position: relative;
+  padding: 48rpx 36rpx 40rpx;
+  z-index: 1;
+}
+
+.hero-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12rpx;
+}
+
+.hero-name {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: block;
+  letter-spacing: 4rpx;
+  margin-bottom: 12rpx;
+}
+
+.hero-tags {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+
+.hero-tags .tag {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  border: 1rpx solid rgba(255, 255, 255, 0.4);
+}
+
+.hero-summary {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32rpx;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-stat-num {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #FFD700;
+}
+
+.hero-stat-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== 定位距离 ===== */
+.location-card {
+  margin: 20rpx 28rpx 0;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: #FFFFFF;
+  box-shadow: 0 3rpx 14rpx rgba(0, 0, 0, 0.06);
+}
+
+.location-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.location-title {
+  display: block;
+  color: #222;
+  font-size: 29rpx;
+  font-weight: 650;
+}
+
+.location-message {
+  display: block;
+  color: #999;
+  font-size: 21rpx;
+  margin-top: 4rpx;
+}
+
+.location-button {
+  flex-shrink: 0;
+  background: #FFF0F0;
+  color: #CC0000;
+  border-radius: 24rpx;
+  padding: 12rpx 20rpx;
+  font-size: 23rpx;
+}
+
+.location-stats {
+  display: flex;
+  margin-top: 22rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #F0F0F0;
+}
+
+.location-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.location-value {
+  color: #CC0000;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.location-label {
+  color: #888;
+  font-size: 21rpx;
+  margin-top: 4rpx;
+}
+
+/* ===== 四入口卡片网格 ===== */
+.entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-top: -20rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.entry-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  border-left: 6rpx solid transparent;
+  transition: transform 0.15s;
+}
+
+.entry-card:active {
+  transform: scale(0.97);
+}
+
+.entry-red { border-left-color: #CC0000; }
+.entry-orange { border-left-color: #E8732A; }
+.entry-green { border-left-color: #228B22; }
+.entry-blue { border-left-color: #2B6FF2; }
+
+.entry-icon {
+  font-size: 40rpx;
+  margin-bottom: 12rpx;
+}
+
+.entry-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  margin-bottom: 6rpx;
+}
+
+.entry-desc {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* ===== 分隔线 ===== */
+.section-divider {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 36rpx 20rpx;
+}
+
+.divider-line {
+  flex: 1;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, #D0C0B0, transparent);
+}
+
+.divider-text {
+  font-size: 26rpx;
+  color: #B8860B;
+  margin: 0 24rpx;
+  font-weight: 500;
+}
+
+/* ===== 红色旧址列表 ===== */
+.sites-list {
+  padding: 0 28rpx;
+}
+
+.site-card {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx 20rpx;
+  margin-bottom: 14rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.site-card:active {
+  background: #FFF5F5;
+}
+
+.site-order {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #CC0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.order-num {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.site-info {
+  flex: 1;
+  margin-left: 18rpx;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.site-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-desc {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site-actions {
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}
+
+.site-nav-btn {
+  background: #F0F0F0;
+  border-radius: 20rpx;
+  padding: 10rpx 20rpx;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.site-nav-btn:active {
+  background: #E0E0E0;
+}
+
+/* ===== 研学路线横幅 ===== */
+.tour-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFF3D6, #FFE4B5);
+  margin: 20rpx 28rpx;
+  border-radius: 20rpx;
+  padding: 28rpx 24rpx;
+  border: 2rpx solid #F0D060;
+  box-shadow: 0 4rpx 12rpx rgba(212, 160, 23, 0.15);
+}
+
+.tour-banner:active {
+  opacity: 0.85;
+}
+
+.tour-banner-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.tour-banner-icon {
+  font-size: 48rpx;
+  margin-right: 16rpx;
+}
+
+.tour-banner-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.tour-banner-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #8B4513;
+  margin-bottom: 4rpx;
+}
+
+.tour-banner-desc {
+  font-size: 24rpx;
+  color: #B8860B;
+}
+
+.tour-banner-arrow {
+  font-size: 32rpx;
+  color: #CC0000;
+  font-weight: 700;
+}
+
+/* ===== 底部导航 ===== */
+.bottom-nav {
+  padding: 24rpx 28rpx;
+}
+
+.navigation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}

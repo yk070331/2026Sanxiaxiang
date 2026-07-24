@@ -1,0 +1,136 @@
+<!--pages/red-stories/index.wxml - 红色故事页-->
+<view class="container">
+  <!-- 分类筛选栏 -->
+  <scroll-view class="category-bar" scroll-x="true" enable-flex>
+    <view
+      class="category-item {{currentCategory === item.id ? 'active' : ''}}"
+      wx:for="{{categories}}"
+      wx:key="id"
+      wx:for-item="item"
+      data-id="{{item.id}}"
+      bindtap="onCategoryChange"
+    >
+      <text>{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 故事列表 / 故事详情 -->
+  <block wx:if="{{!currentStory}}">
+    <!-- 故事列表 -->
+    <view class="stories-list">
+      <view
+        class="story-card"
+        wx:for="{{currentCategory === 'all' ? stories : stories}}"
+        wx:key="id"
+        wx:for-item="story"
+        wx:if="{{currentCategory === 'all' || story.category === currentCategory}}"
+        data-id="{{story.id}}"
+        bindtap="onStoryTap"
+      >
+        <view class="story-card-image">
+          <view class="story-card-placeholder">
+            <text class="story-card-emoji">📖</text>
+          </view>
+          <view class="story-card-category">
+            <text class="tag tag-red" wx:if="{{story.category === '革命往事'}}">{{story.category}}</text>
+            <text class="tag tag-gold" wx:else>{{story.category}}</text>
+          </view>
+        </view>
+        <view class="story-card-body">
+          <text class="story-card-title">{{story.title}}</text>
+          <text class="story-card-excerpt">{{story.text.substring(0, 80)}}...</text>
+          <view class="story-card-meta">
+            <text class="meta-author">🗣️ {{story.author}}</text>
+            <text class="meta-date">📅 {{story.date}}</text>
+            <text class="meta-audio" wx:if="{{story.audioDuration}}">🔊 {{story.audioDuration}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{stories.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无故事，实地采集内容整理中</text>
+    </view>
+  </block>
+
+  <!-- 故事详情页 -->
+  <block wx:if="{{currentStory}}">
+    <view class="story-detail">
+      <!-- 头图 -->
+      <view class="detail-hero">
+        <view class="detail-hero-placeholder">
+          <text class="detail-hero-emoji">📜</text>
+        </view>
+        <view class="detail-hero-info">
+          <text class="detail-title">{{currentStory.title}}</text>
+          <view class="detail-meta">
+            <text class="meta-tag tag-red">{{currentStory.category}}</text>
+            <text class="meta-text">{{currentStory.date}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 音频播放器 -->
+      <view class="audio-player" wx:if="{{currentStory.audio && currentStory.audioAvailable}}">
+        <view class="audio-header">
+          <text class="audio-label">🎙️ 村民口述原声音频</text>
+          <text class="audio-source">口述人：{{currentStory.author}}</text>
+        </view>
+        <view class="audio-controls">
+          <view class="audio-btn-play" bindtap="onToggleAudio">
+            <text class="play-icon">{{isPlaying && playingStoryId === currentStory.id ? '⏸️' : '▶️'}}</text>
+          </view>
+          <view class="audio-progress-area">
+            <slider
+              class="audio-slider"
+              value="{{audioProgress}}"
+              min="0"
+              max="100"
+              step="1"
+              activeColor="#CC0000"
+              backgroundColor="#E8E8E8"
+              block-size="18"
+              bindchange="onAudioSeek"
+            />
+            <view class="audio-time">
+              <text>{{isPlaying && playingStoryId === currentStory.id ? audioCurrentTime : '00:00'}}</text>
+              <text>/</text>
+              <text>{{currentStory.audioDuration || '00:00'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="audio-player" wx:elif="{{currentStory.audio}}">
+        <view class="audio-header">
+          <text class="audio-label">🎙️ 口述音频待上传</text>
+          <text class="audio-source">上传素材后即可启用播放</text>
+        </view>
+      </view>
+
+      <!-- 故事正文 -->
+      <view class="detail-content">
+        <view class="content-header">
+          <view class="label-dot"></view>
+          <text class="content-title">故事正文</text>
+        </view>
+        <text class="content-body">{{currentStory.text}}</text>
+      </view>
+
+      <!-- 作者/来源信息 -->
+      <view class="detail-source">
+        <text class="source-label">采集来源</text>
+        <text class="source-text">{{currentStory.author}}</text>
+        <text class="source-text">采集日期：{{currentStory.date}}</text>
+        <text class="source-text">关联地点：{{currentStory.relatedSite || '乔林村'}}</text>
+      </view>
+
+      <!-- 关闭按钮 -->
+      <view class="detail-close">
+        <button class="btn-outline" bindtap="onCloseStory">← 返回故事列表</button>
+      </view>
+    </view>
+    <view class="safe-area-bottom"></view>
+  </block>
+</view>

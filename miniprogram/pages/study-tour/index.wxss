@@ -1,0 +1,353 @@
+/**pages/study-tour/index.wxss**/
+
+.container {
+  background: #FFF8F0;
+  min-height: 100vh;
+}
+
+/* ===== 路线概览头 ===== */
+.tour-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.tour-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(160deg, #5C3A0A, #8B6914, #B8860B);
+}
+
+.tour-hero-content {
+  position: relative;
+  padding: 40rpx 36rpx 32rpx;
+  z-index: 1;
+}
+
+.tour-toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tour-hero-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.tour-hero-stats {
+  display: flex;
+  gap: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.tour-stat {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.tour-stat-icon {
+  font-size: 28rpx;
+}
+
+.tour-stat-text {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.tour-hero-desc {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  display: block;
+}
+
+/* ===== 打卡进度 ===== */
+.checkin-progress {
+  background: #FFFFFF;
+  margin: 20rpx 28rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.progress-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.progress-count {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #CC0000;
+}
+
+.progress-bar {
+  height: 12rpx;
+  background: #F0F0F0;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #CC0000, #FF4444);
+  border-radius: 6rpx;
+  transition: width 0.4s ease;
+}
+
+.progress-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.progress-btn {
+  padding: 14rpx 12rpx !important;
+  font-size: 22rpx !important;
+}
+
+/* ===== 站点轮播 ===== */
+.tour-swiper-container {
+  margin: 0 28rpx 20rpx;
+}
+
+.tour-swiper {
+  height: 580rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.segment-card {
+  height: 100%;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin: 0 4rpx;
+}
+
+.seg-start {
+  border-top: 6rpx solid #228B22;
+}
+
+.seg-end {
+  border-top: 6rpx solid #2B6FF2;
+}
+
+.seg-site {
+  border-top: 6rpx solid #CC0000;
+}
+
+.seg-nature {
+  border-top: 6rpx solid #126E82;
+}
+
+/* 类型标记 */
+.seg-type-badge {
+  display: inline-block;
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.badge-start {
+  background: #E8F5E8;
+  color: #228B22;
+}
+
+.badge-end {
+  background: #E8EEFF;
+  color: #2B6FF2;
+}
+
+.badge-site {
+  background: #FFF0F0;
+  color: #CC0000;
+}
+
+/* 站点标题和距离 */
+.seg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.seg-name {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1A1A1A;
+}
+
+.seg-distance {
+  font-size: 24rpx;
+  color: #AAA;
+  background: #F5F5F5;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+/* 描述 */
+.seg-body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.seg-desc {
+  font-size: 28rpx;
+  color: #555;
+  line-height: 1.8;
+}
+
+.seg-tips {
+  background: #FFF8E8;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-top: 16rpx;
+}
+
+.tips-label {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #B8860B;
+  margin-bottom: 6rpx;
+}
+
+.tips-text {
+  font-size: 24rpx;
+  color: #8B6914;
+  line-height: 1.6;
+}
+
+/* 操作按钮 */
+.seg-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  flex-wrap: wrap;
+}
+
+.btn-small {
+  font-size: 24rpx !important;
+  padding: 14rpx 24rpx !important;
+  flex: 1;
+}
+
+.btn-checkin {
+  background: #F0F0F0;
+  color: #666;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  padding: 14rpx 24rpx;
+  text-align: center;
+  flex: 1;
+}
+
+.btn-checkin.checked {
+  background: #E8F5E8;
+  color: #228B22;
+}
+
+/* ===== 站点快速导航列表 ===== */
+.segments-nav {
+  margin-bottom: 20rpx;
+}
+
+.nav-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 0 28rpx;
+  display: block;
+  margin-bottom: 14rpx;
+}
+
+.segments-list {
+  display: flex;
+  white-space: nowrap;
+  padding: 0 28rpx;
+}
+
+.seg-nav-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14rpx 20rpx;
+  margin-right: 12rpx;
+  border-radius: 14rpx;
+  background: #FFFFFF;
+  min-width: 100rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.seg-nav-item.active {
+  background: #CC0000;
+}
+
+.seg-nav-item.checked-bg {
+  border: 2rpx solid #228B22;
+}
+
+.seg-nav-num {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #CC0000;
+  margin-bottom: 4rpx;
+}
+
+.seg-nav-item.active .seg-nav-num {
+  color: #FFFFFF;
+}
+
+.seg-nav-name {
+  font-size: 20rpx;
+  color: #888;
+  white-space: nowrap;
+}
+
+.seg-nav-item.active .seg-nav-name {
+  color: #FFFFFF;
+}
+
+/* ===== 底部导航 ===== */
+.bottom-bar {
+  padding: 24rpx 28rpx;
+}
+
+.bottom-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14rpx;
+}
+
+.route-coordinate-note {
+  display: block;
+  color: #999;
+  font-size: 21rpx;
+  text-align: center;
+  margin-top: 14rpx;
+}
+
+.btn-full {
+  width: 100%;
+}

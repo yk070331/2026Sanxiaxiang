@@ -1,0 +1,333 @@
+/**pages/red-stories/index.wxss**/
+
+.container {
+  background: #FFF8F0;
+  min-height: 100vh;
+}
+
+/* ===== 分类筛选栏 ===== */
+.category-bar {
+  display: flex;
+  white-space: nowrap;
+  padding: 20rpx 28rpx;
+  background: #FFFFFF;
+  border-bottom: 1rpx solid #F0F0F0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 12rpx 28rpx;
+  margin-right: 16rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #F5F5F5;
+  transition: all 0.2s;
+}
+
+.category-item.active {
+  background: #CC0000;
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+/* ===== 故事列表 ===== */
+.stories-list {
+  padding: 20rpx 28rpx;
+}
+
+.story-card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.story-card:active {
+  transform: scale(0.98);
+}
+
+.story-card-image {
+  position: relative;
+  height: 200rpx;
+  overflow: hidden;
+}
+
+.story-card-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #8B0000, #CC0000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-card-emoji {
+  font-size: 72rpx;
+}
+
+.story-card-category {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+}
+
+.story-card-body {
+  padding: 20rpx 24rpx 24rpx;
+}
+
+.story-card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.story-card-excerpt {
+  font-size: 26rpx;
+  color: #888;
+  line-height: 1.6;
+  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-bottom: 14rpx;
+}
+
+.story-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.meta-author,
+.meta-date,
+.meta-audio {
+  font-size: 22rpx;
+  color: #AAA;
+}
+
+.meta-audio {
+  color: #CC0000;
+}
+
+/* ===== 故事详情 ===== */
+.story-detail {
+  padding-bottom: 40rpx;
+}
+
+.detail-hero {
+  position: relative;
+  min-height: 260rpx;
+  display: flex;
+  align-items: flex-end;
+}
+
+.detail-hero-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(160deg, #4A0000, #8B0000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-hero-emoji {
+  font-size: 80rpx;
+}
+
+.detail-hero-info {
+  position: relative;
+  z-index: 1;
+  padding: 36rpx;
+}
+
+.detail-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 10rpx;
+}
+
+.detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.meta-tag {
+  border: 1rpx solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.meta-text {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== 音频播放器 ===== */
+.audio-player {
+  background: linear-gradient(135deg, #FFF5F5, #FFF0F0);
+  margin: 20rpx 28rpx;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #F0D0D0;
+}
+
+.audio-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.audio-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #CC0000;
+}
+
+.audio-source {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.audio-btn-play {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #CC0000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(204, 0, 0, 0.3);
+}
+
+.play-icon {
+  font-size: 32rpx;
+}
+
+.audio-progress-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.audio-slider {
+  width: 100%;
+  margin: 0;
+}
+
+.audio-time {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4rpx;
+  font-size: 20rpx;
+  color: #999;
+  margin-top: -4rpx;
+}
+
+/* ===== 内容区 ===== */
+.detail-content {
+  background: #FFFFFF;
+  margin: 20rpx 28rpx;
+  border-radius: 20rpx;
+  padding: 28rpx;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.label-dot {
+  width: 8rpx;
+  height: 28rpx;
+  background: #CC0000;
+  border-radius: 4rpx;
+  margin-right: 12rpx;
+}
+
+.content-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.content-body {
+  font-size: 28rpx;
+  color: #444;
+  line-height: 2;
+  text-indent: 2em;
+  white-space: pre-wrap;
+}
+
+/* ===== 来源信息 ===== */
+.detail-source {
+  background: #FAFAFA;
+  margin: 0 28rpx;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.source-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #999;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.source-text {
+  font-size: 24rpx;
+  color: #AAA;
+  display: block;
+  line-height: 1.8;
+}
+
+/* ===== 关闭按钮 ===== */
+.detail-close {
+  text-align: center;
+  padding: 28rpx;
+}
+
+.detail-close .btn-outline {
+  display: inline-block;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  opacity: 0.4;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #AAA;
+}

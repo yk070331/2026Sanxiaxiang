@@ -1,0 +1,150 @@
+/** pages/route-recommend/index.wxss **/
+.container {
+  padding-bottom: 40rpx;
+  background: #FFF8F0;
+}
+
+.recommend-hero {
+  padding: 42rpx 30rpx 34rpx;
+  background: linear-gradient(145deg, #8B0000, #CC0000);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.hero-title {
+  display: block;
+  color: #FFFFFF;
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.hero-desc {
+  display: block;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 24rpx;
+  margin-top: 10rpx;
+}
+
+.option-card,
+.result-card {
+  margin: 20rpx 28rpx;
+  padding: 26rpx;
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  box-shadow: 0 3rpx 14rpx rgba(0, 0, 0, 0.06);
+}
+
+.option-title {
+  display: block;
+  color: #333;
+  font-size: 28rpx;
+  font-weight: 650;
+  margin-bottom: 16rpx;
+}
+
+.option-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.option-chip {
+  padding: 12rpx 22rpx;
+  background: #F5F5F5;
+  color: #666;
+  border-radius: 28rpx;
+  font-size: 24rpx;
+  border: 2rpx solid transparent;
+}
+
+.option-chip.selected {
+  background: #FFF0F0;
+  color: #CC0000;
+  border-color: #CC0000;
+}
+
+.result-card {
+  border-top: 6rpx solid #CC0000;
+}
+
+.result-label {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  border-radius: 18rpx;
+  color: #CC0000;
+  background: #FFF0F0;
+  font-size: 22rpx;
+}
+
+.result-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  margin-top: 14rpx;
+  color: #1A1A1A;
+}
+
+.result-summary {
+  display: block;
+  color: #666;
+  font-size: 26rpx;
+  margin-top: 10rpx;
+}
+
+.result-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 20rpx 0;
+}
+
+.result-stats text {
+  padding: 8rpx 14rpx;
+  border-radius: 10rpx;
+  background: #FFF8E8;
+  color: #8B6914;
+  font-size: 23rpx;
+}
+
+.stop-list {
+  margin-bottom: 24rpx;
+}
+
+.stop-item {
+  display: flex;
+  align-items: center;
+  padding: 13rpx 0;
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.stop-index {
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  background: #CC0000;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  font-size: 22rpx;
+}
+
+.stop-name {
+  color: #333;
+  font-size: 27rpx;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.coordinate-note {
+  display: block;
+  color: #999;
+  font-size: 22rpx;
+  margin-top: 16rpx;
+  text-align: center;
+}

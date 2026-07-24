@@ -1,0 +1,144 @@
+<!--pages/study-tour/index.wxml - 研学路线页-->
+<view class="container {{careMode ? 'care-mode' : ''}}">
+  <!-- 路线概览头 -->
+  <view class="tour-hero">
+    <view class="tour-hero-bg"></view>
+    <view class="tour-hero-content">
+      <view class="tour-toolbar">
+        <button class="care-toggle" bindtap="onToggleCare">
+          {{careMode ? '标准模式' : '关怀模式'}}
+        </button>
+      </view>
+      <text class="tour-hero-title">🚩 {{tour.title}}</text>
+      <view class="tour-hero-stats">
+        <view class="tour-stat">
+          <text class="tour-stat-icon">📏</text>
+          <text class="tour-stat-text">{{tour.totalDistance}}</text>
+        </view>
+        <view class="tour-stat">
+          <text class="tour-stat-icon">⏱️</text>
+          <text class="tour-stat-text">{{tour.estimatedTime}}</text>
+        </view>
+        <view class="tour-stat">
+          <text class="tour-stat-icon">🚶</text>
+          <text class="tour-stat-text">{{tour.difficulty}}</text>
+        </view>
+      </view>
+      <text class="tour-hero-desc">{{tour.description}}</text>
+    </view>
+  </view>
+
+  <!-- 打卡进度条 -->
+  <view class="checkin-progress">
+    <view class="progress-header">
+      <text class="progress-label">打卡进度</text>
+      <text class="progress-count">{{checkInCount}}/{{totalSegments}}</text>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{totalSegments > 0 ? checkInCount / totalSegments * 100 : 0}}%;"></view>
+    </view>
+    <view class="progress-actions">
+      <button class="btn-outline progress-btn" bindtap="onScanSiteCode">▣ 扫码讲解与打卡</button>
+      <button class="btn-outline progress-btn" bindtap="onShowCertificate">
+        {{checkInCount === totalSegments && totalSegments > 0 ? '🎓 查看研学证书' : '🎓 证书待解锁'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 路线站点轮播 -->
+  <view class="tour-swiper-container">
+    <swiper
+      class="tour-swiper"
+      current="{{currentSegment}}"
+      bindchange="onSwiperChange"
+      indicator-dots="{{true}}"
+      indicator-color="#DDD"
+      indicator-active-color="#CC0000"
+    >
+      <swiper-item wx:for="{{tour.segments}}" wx:key="id" wx:for-item="seg">
+        <view class="segment-card {{seg.type === 'start' ? 'seg-start' : (seg.type === 'end' ? 'seg-end' : (seg.type === 'nature' ? 'seg-nature' : 'seg-site'))}}">
+          <!-- 站点类型标记 -->
+          <view class="seg-type-badge {{seg.type === 'start' ? 'badge-start' : (seg.type === 'end' ? 'badge-end' : 'badge-site')}}">
+            <text wx:if="{{seg.type === 'start'}}">🏁 起点</text>
+            <text wx:elif="{{seg.type === 'end'}}">🏁 终点</text>
+            <text wx:elif="{{seg.type === 'nature'}}">💧 生态点</text>
+            <text wx:else>🔴 第{{seg.order - 1}}站</text>
+          </view>
+
+          <!-- 站点名称和距离 -->
+          <view class="seg-header">
+            <text class="seg-name">{{seg.name}}</text>
+            <text class="seg-distance" wx:if="{{seg.distance}}">{{seg.distance}}</text>
+          </view>
+
+          <!-- 站点描述 -->
+          <view class="seg-body">
+            <text class="seg-desc">{{seg.description}}</text>
+            <view class="seg-tips" wx:if="{{seg.tips}}">
+              <text class="tips-label">💡 小贴士</text>
+              <text class="tips-text">{{seg.tips}}</text>
+            </view>
+          </view>
+
+          <!-- 操作按钮 -->
+          <view class="seg-actions">
+            <button
+              class="btn-primary btn-small"
+              data-id="{{seg.id}}"
+              bindtap="onNavigateToSegment"
+            >
+              🧭 导航到此
+            </button>
+            <button
+              wx:if="{{seg.type === 'site'}}"
+              class="btn-checkin {{checkedIn[seg.id] ? 'checked' : ''}}"
+              data-id="{{seg.id}}"
+              bindtap="onCheckIn"
+            >
+              {{checkedIn[seg.id] ? '✅ 已打卡' : '📍 打卡'}}
+            </button>
+            <button
+              wx:if="{{seg.storyId}}"
+              class="btn-outline btn-small"
+              data-story-id="{{seg.storyId}}"
+              bindtap="onViewStory"
+            >
+              📖 听故事
+            </button>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 站点列表快速跳转 -->
+  <view class="segments-nav">
+    <text class="nav-title">路线站点</text>
+    <scroll-view class="segments-list" scroll-x="true" enable-flex>
+      <view
+        class="seg-nav-item {{currentSegment === index ? 'active' : ''}} {{checkedIn[seg.id] ? 'checked-bg' : ''}}"
+        wx:for="{{tour.segments}}"
+        wx:key="id"
+        wx:for-item="seg"
+        data-order="{{seg.order}}"
+        bindtap="onSegmentTap"
+      >
+        <text class="seg-nav-num">{{seg.type === 'start' ? '起' : (seg.type === 'end' ? '终' : seg.order - 1)}}</text>
+        <text class="seg-nav-name">{{seg.name}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部一键导航 -->
+  <view class="bottom-bar">
+    <view class="bottom-actions">
+      <button class="btn-primary" bindtap="onNavigateToStart">🧭 导航到路线起点</button>
+      <button class="btn-outline" bindtap="onGoToRouteRecommend">重新推荐路线</button>
+    </view>
+    <text class="route-coordinate-note">
+      6处旧址坐标待腾讯地图分享点核验，暂不显示虚构路线连线。
+    </text>
+  </view>
+
+  <view class="safe-area-bottom"></view>
+</view>
