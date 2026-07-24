@@ -439,6 +439,16 @@ const photoGallery = [
     desc: '从陵园阶梯远眺茨坪城区与井冈山群峰',
     date: '2026年7月',
     available: true
+  },
+  {
+    id: 'photo_17',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '八角楼标语墙',
+    src: '/assets/images/gallery_bajiaolou_slogan_wall.jpg',
+    desc: '八角楼古建筑墙面保存展示的革命标语',
+    date: '2026年7月',
+    available: true
   }
 ];
 
