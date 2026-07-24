@@ -34,10 +34,11 @@
           lazy-load="true"
         ></image>
         <view wx:else class="photo-placeholder">
-          <text class="photo-emoji">{{photo.category === 'revolutionary' ? '🏛️' : (photo.category === 'village' ? '🏘️' : '🌿')}}</text>
+          <text class="photo-emoji">{{photo.category === 'revolutionary' ? '🏛️' : (photo.category === 'heritage' ? '📜' : (photo.category === 'village' ? '🏘️' : '🌿'))}}</text>
         </view>
         <view class="photo-category-tag">
           <text class="tag tag-red" wx:if="{{photo.category === 'revolutionary'}}">{{photo.categoryName}}</text>
+          <text class="tag tag-purple" wx:elif="{{photo.category === 'heritage'}}">{{photo.categoryName}}</text>
           <text class="tag tag-gold" wx:elif="{{photo.category === 'village'}}">{{photo.categoryName}}</text>
           <text class="tag tag-green" wx:else>{{photo.categoryName}}</text>
         </view>

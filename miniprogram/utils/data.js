@@ -519,6 +519,46 @@ const photoGallery = [
     desc: '井冈山革命烈士纪念堂正面近景与纪念题词',
     date: '2026年7月',
     available: true
+  },
+  {
+    id: 'photo_25',
+    category: 'heritage',
+    categoryName: '文物史实',
+    title: '刘资育之子青年时期照片',
+    src: '/assets/images/historical_liu_ziyu_son_young.jpg',
+    desc: '乔林村文物史实资料：乔林乡第二任党支部书记刘资育之子青年时期留影，姓名与拍摄年份待核验',
+    date: '历史资料',
+    available: true
+  },
+  {
+    id: 'photo_26',
+    category: 'heritage',
+    categoryName: '文物史实',
+    title: '刘资育革命烈士证明书',
+    src: '/assets/images/historical_liu_ziyu_martyr_certificate.jpg',
+    desc: '乔林村文物史实资料：刘资育革命烈士证明书影像，具体信息以原件及审核资料为准',
+    date: '1983年6月',
+    available: true
+  },
+  {
+    id: 'photo_27',
+    category: 'heritage',
+    categoryName: '文物史实',
+    title: '刘资育相关人物肖像',
+    src: '/assets/images/historical_liu_ziyu_portrait.jpg',
+    desc: '乔林村文物史实资料：刘资育相关人物肖像，人物身份与照片年代待村级史料审核确认',
+    date: '历史资料',
+    available: true
+  },
+  {
+    id: 'photo_28',
+    category: 'heritage',
+    categoryName: '文物史实',
+    title: '刘资育之子历史照片',
+    src: '/assets/images/historical_liu_ziyu_son_later.jpg',
+    desc: '乔林村文物史实资料：乔林乡第二任党支部书记刘资育之子留影，姓名与拍摄年份待核验',
+    date: '历史资料',
+    available: true
   }
 ];
 

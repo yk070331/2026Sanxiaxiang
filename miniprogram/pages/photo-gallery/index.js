@@ -6,6 +6,7 @@ Page({
     categories: [
       { id: 'all', name: '全部' },
       { id: 'revolutionary', name: '革命旧址' },
+      { id: 'heritage', name: '文物史实' },
       { id: 'village', name: '古村落' },
       { id: 'nature', name: '水源山林' }
     ],

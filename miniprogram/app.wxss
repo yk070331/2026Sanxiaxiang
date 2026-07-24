@@ -142,6 +142,11 @@ button::after { border: none; }
   color: #228B22;
 }
 
+.tag-purple {
+  background: #F3E5F5;
+  color: #6A1B9A;
+}
+
 /* 安全区域 */
 .safe-area-bottom {
   padding-bottom: constant(safe-area-inset-bottom);
