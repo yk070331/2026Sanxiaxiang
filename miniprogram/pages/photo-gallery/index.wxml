@@ -26,7 +26,14 @@
       bindtap="onPhotoTap"
     >
       <view class="photo-image">
-        <view class="photo-placeholder">
+        <image
+          wx:if="{{photo.available}}"
+          class="photo-real-image"
+          src="{{photo.src}}"
+          mode="aspectFill"
+          lazy-load="true"
+        ></image>
+        <view wx:else class="photo-placeholder">
           <text class="photo-emoji">{{photo.category === 'revolutionary' ? '🏛️' : (photo.category === 'village' ? '🏘️' : '🌿')}}</text>
         </view>
         <view class="photo-category-tag">
@@ -70,9 +77,9 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="preview-info" wx:if="{{photos[previewIndex]}}">
-        <text class="preview-title">{{photos[previewIndex].title}}</text>
-        <text class="preview-desc">{{photos[previewIndex].desc}}</text>
+      <view class="preview-info" wx:if="{{previewItems[previewIndex]}}">
+        <text class="preview-title">{{previewItems[previewIndex].title}}</text>
+        <text class="preview-desc">{{previewItems[previewIndex].desc}}</text>
       </view>
     </view>
   </view>

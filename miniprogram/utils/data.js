@@ -294,19 +294,21 @@ const photoGallery = [
     id: 'photo_1',
     category: 'revolutionary',
     categoryName: '革命旧址',
-    title: '八角楼正面全景',
-    src: '/assets/images/gallery_bajiaolou_1.jpg',
-    desc: '茅坪八角楼全貌，青砖灰瓦的赣西民居建筑',
-    date: '2025年6月'
+    title: '八角楼外观',
+    src: '/assets/images/gallery_bajiaolou_exterior.jpg',
+    desc: '八角楼青砖灰瓦的赣西民居建筑外观',
+    date: '2026年7月',
+    available: true
   },
   {
     id: 'photo_2',
     category: 'revolutionary',
     categoryName: '革命旧址',
-    title: '八角楼内毛泽东卧室',
-    src: '/assets/images/gallery_bajiaolou_2.jpg',
-    desc: '八角楼二层毛泽东旧居内景，清油灯与书桌',
-    date: '2025年6月'
+    title: '八角楼内部天窗',
+    src: '/assets/images/gallery_bajiaolou_skylight.jpg',
+    desc: '八角楼室内陈设与标志性的八角形天窗',
+    date: '2026年7月',
+    available: true
   },
   {
     id: 'photo_3',
@@ -417,13 +419,34 @@ const photoGallery = [
     src: '/assets/images/gallery_titian.jpg',
     desc: '村南的梯田，春天油菜花盛开时最为壮观',
     date: '2025年6月'
+  },
+  {
+    id: 'photo_15',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '井冈山革命烈士纪念堂',
+    src: '/assets/images/gallery_lieshi_memorial_hall.jpg',
+    desc: '井冈山革命烈士纪念堂正面及纪念题词',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_16',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '井冈山革命烈士陵园阶梯景观',
+    src: '/assets/images/gallery_lieshi_cemetery_view.jpg',
+    desc: '从陵园阶梯远眺茨坪城区与井冈山群峰',
+    date: '2026年7月',
+    available: true
   }
 ];
 
-// 当前仓库未包含实景照片，避免点击后打开空白预览。
-// 上传对应文件后，将单张照片的 available 改为 true。
+// 尚未上传对应实景图的条目保留占位状态，避免打开空白预览。
 photoGallery.forEach(photo => {
-  photo.available = false;
+  if (typeof photo.available !== 'boolean') {
+    photo.available = false;
+  }
 });
 
 // ==================== 研学路线 ====================

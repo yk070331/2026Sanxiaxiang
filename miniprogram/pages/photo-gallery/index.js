@@ -14,7 +14,8 @@ Page({
     // 大图浏览
     showPreview: false,
     previewIndex: 0,
-    previewPhotos: []
+    previewPhotos: [],
+    previewItems: []
   },
 
   onLoad(options) {
@@ -48,10 +49,13 @@ Page({
       wx.showToast({ title: '实景照片待上传', icon: 'none' });
       return;
     }
+    const previewItems = this.data.photos.filter(item => item.available !== false);
+    const previewIndex = previewItems.findIndex(item => item.id === photo.id);
     this.setData({
       showPreview: true,
-      previewIndex: index,
-      previewPhotos: this.data.photos.map(p => p.src)
+      previewIndex,
+      previewPhotos: previewItems.map(item => item.src),
+      previewItems
     });
   },
 
@@ -68,7 +72,9 @@ Page({
   // 预览图片（使用微信原生）
   onPreviewImage(e) {
     const src = e.currentTarget.dataset.src;
-    const urls = this.data.photos.map(p => p.src);
+    const urls = this.data.photos
+      .filter(photo => photo.available !== false)
+      .map(photo => photo.src);
     wx.previewImage({
       current: src,
       urls: urls
