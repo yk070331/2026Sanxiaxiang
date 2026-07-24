@@ -449,6 +449,76 @@ const photoGallery = [
     desc: '八角楼古建筑墙面保存展示的革命标语',
     date: '2026年7月',
     available: true
+  },
+  {
+    id: 'photo_18',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '黄洋界云海山景',
+    src: '/assets/images/gallery_huangyangjie_mountain_view.jpg',
+    desc: '从黄洋界远眺井冈山群峰与云海景观',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_19',
+    category: 'village',
+    categoryName: '古村落',
+    title: '乔林村山林民居',
+    src: '/assets/images/gallery_qiaolin_forest_home.jpg',
+    desc: '乔林村青山竹林环绕的乡村民居与生态环境',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_20',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '小井红军医院旧址',
+    src: '/assets/images/gallery_xiaojing_red_army_hospital.jpg',
+    desc: '小井红军医院旧址建筑正面及参观场景',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_21',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '号角主题景观',
+    src: '/assets/images/gallery_bugle_landscape.jpg',
+    desc: '井冈山道路旁以红色号角为主题的景观设施',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_22',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '朱毛故居',
+    src: '/assets/images/gallery_zhu_mao_former_residence.jpg',
+    desc: '青山环抱中的朱毛故居建筑外观',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_23',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '井冈山革命烈士陵园入口全景',
+    src: '/assets/images/gallery_lieshi_cemetery_entrance.jpg',
+    desc: '从入口广场远望纪念堂与两侧林荫阶梯',
+    date: '2026年7月',
+    available: true
+  },
+  {
+    id: 'photo_24',
+    category: 'revolutionary',
+    categoryName: '革命旧址',
+    title: '井冈山革命烈士纪念堂近景',
+    src: '/assets/images/gallery_lieshi_memorial_close.jpg',
+    desc: '井冈山革命烈士纪念堂正面近景与纪念题词',
+    date: '2026年7月',
+    available: true
   }
 ];
 

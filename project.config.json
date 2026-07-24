@@ -74,7 +74,19 @@
   "compileType": "miniprogram",
   "srcMiniprogramRoot": "miniprogram/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "file", "value": "images/create_cbr.png" },
+      { "type": "file", "value": "images/ai_example1.png" },
+      { "type": "file", "value": "images/create_cbrf.png" },
+      { "type": "file", "value": "images/env-select.png" },
+      { "type": "file", "value": "images/ai_example2.png" },
+      { "type": "file", "value": "images/default-goods-image.png" },
+      { "type": "file", "value": "images/database.png" },
+      { "type": "file", "value": "images/create_env.png" },
+      { "type": "file", "value": "images/function_deploy.png" },
+      { "type": "file", "value": "images/database_add.png" },
+      { "type": "file", "value": "images/scf-enter.png" }
+    ],
     "include": []
   },
   "editorSetting": {
