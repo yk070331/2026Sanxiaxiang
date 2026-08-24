@@ -8,7 +8,8 @@
 
 - 全域地图、点位搜索、类别筛选、当前位置与腾讯地图导航。
 - 乔林村委会/游客入口、乔林水库可达入口/大坝使用腾讯地图核验坐标。
-- 30分钟初心线、60分钟研学线、半日乡村线三套可解释路线推荐。
+- 30分钟初心线、60分钟研学线、半日乡村线三套可解释路线推荐；展示距离均明确标注为待实测的规划参考。
+- 研学页自动提示第一处未打卡旧址；坐标未核验时只切换对应卡片并拒绝推测导航。
 - 红色故事、实景相册、文物史实分类和微信原生大图预览。
 - 手动打卡与二维码打卡、本地进度、云端同步及弱网补传。
 - 完成路线后离线生成红色研学证书海报，可预览并保存到手机相册。
@@ -87,18 +88,13 @@ scripts/                PDF工具与发布体检脚本
 ## 自动化测试与发布体检
 
 ```powershell
-node tests/cloudfunctions.test.js
-node tests/visitorSync.test.js
-node tests/correctionService.test.js
-node tests/quizData.test.js
-node tests/appCloudInit.test.js
-node tests/staticPages.test.js
+Get-ChildItem tests -Filter *.test.js | Sort-Object Name | ForEach-Object { node $_.FullName }
 node scripts/release-readiness.js
 ```
 
-发布体检会自动检查页面、云函数、腾讯坐标、本地素材、包体预估、强特征密钥、私人文件和参赛材料。`FAIL` 必须修复；`WARN` 表示仍需在提交前完成的人工或外部条件。
+发布体检会自动检查页面、云函数、腾讯坐标、本地素材、包体预估、强特征密钥、私人文件和参赛材料。`FAIL` 必须修复；`WARN` 表示仍需在提交前完成的人工或外部条件。当前12个测试脚本全部通过，静态回归检查127个源码文件，发布检查结果为21 PASS / 4 WARN / 0 FAIL。
 
-当前相册已独立分包：主包静态预估约0.25 MB，`assets`相册分包约1.63 MB，总体约1.88 MB；最终结果以微信开发者工具包体分析为准。
+当前相册已独立分包：主包静态预估约0.26 MB，`assets`相册分包约1.63 MB，总体约1.89 MB；最终结果以微信开发者工具包体分析为准。
 
 ## 当前证据边界
 
