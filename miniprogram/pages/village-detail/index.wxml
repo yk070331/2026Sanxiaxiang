@@ -32,6 +32,9 @@
           <text class="hero-stat-label">党员</text>
         </view>
       </view>
+      <text wx:if="{{village.id === 'village_1'}}" style="display: block; margin-top: 16rpx; color: rgba(255,255,255,.82); font-size: 21rpx; line-height: 1.5;">
+        村情数字为调研台账，待村委复核
+      </text>
     </view>
   </view>
 

@@ -5,6 +5,12 @@
     <text class="info-village-name">🏘️ {{info.basic.name}}</text>
     <text class="info-village-sub">{{info.basic.administrative}}</text>
   </view>
+  <view style="margin: 20rpx 28rpx 0; padding: 20rpx 24rpx; border-radius: 16rpx; background: #FFF3D6; border-left: 8rpx solid #D49A20;">
+    <text style="display: block; color: #624500; font-size: 26rpx; font-weight: 600;">数据状态：调研台账·待村委复核</text>
+    <text style="display: block; margin-top: 8rpx; color: #7A6541; font-size: 23rpx; line-height: 1.65;">
+      除已标明来源的腾讯地图坐标外，人口、土地、收入、水质、设施和红色资源数量等须以村委或主管部门最终审核数据为准。
+    </text>
+  </view>
 
   <!-- 分类 Tab -->
   <scroll-view class="section-tabs" scroll-x="true" enable-flex>

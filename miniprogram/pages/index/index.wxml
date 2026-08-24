@@ -98,6 +98,9 @@
         <text class="popup-summary">{{popupData.summary}}</text>
       </view>
       <view class="popup-body">
+        <view wx:if="{{popupData.id === 'village_1'}}" style="margin-bottom: 18rpx; padding: 14rpx 18rpx; border-radius: 12rpx; background: #FFF3D6; color: #765200; font-size: 22rpx; line-height: 1.6;">
+          数据状态：人口、面积、党员等为调研台账，待村委复核，不作为官方统计发布。
+        </view>
         <view class="village-quick-stats" wx:if="{{popupData.population}}">
           <view class="stat-item"><text class="stat-num">{{popupData.population}}</text><text class="stat-label">人口</text></view>
           <view class="stat-divider"></view>
