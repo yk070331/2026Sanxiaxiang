@@ -76,7 +76,7 @@ Page({
   // 跳转到相册
   onGoToGallery() {
     wx.navigateTo({
-      url: '/pages/photo-gallery/index?category=all'
+      url: '/assets/gallery/index?category=all'
     });
   },
 

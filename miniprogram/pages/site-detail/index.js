@@ -105,7 +105,7 @@ Page({
   // 跳转实景相册
   onGoToGallery() {
     wx.navigateTo({
-      url: '/pages/photo-gallery/index?category=revolutionary'
+      url: '/assets/gallery/index?category=revolutionary'
     });
   },
 

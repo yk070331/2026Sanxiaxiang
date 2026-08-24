@@ -92,7 +92,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '红韵乔林 - 实景相册',
-      path: '/pages/photo-gallery/index'
+      path: '/assets/gallery/index'
     };
   }
 });

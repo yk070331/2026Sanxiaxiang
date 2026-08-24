@@ -52,12 +52,13 @@ miniprogram/
     index/              首页地图
     village-detail/     村落详情
     site-detail/        旧址详情与纠错入口
-    photo-gallery/      实景相册与文物史实
     route-recommend/    个性化路线推荐
     study-tour/         导航、扫码与打卡
     knowledge-quiz/     红色知识闯关
     correction/         游客纠错
     admin/              资料录入与审核
+    privacy/            可信内容与隐私中心
+  assets/               相册分包：实景相册页与本地实拍/史料图片
   utils/
     data.js             本地已审核核心数据
     contentService.js   云端内容读取与本地降级
@@ -95,6 +96,8 @@ node scripts/release-readiness.js
 ```
 
 发布体检会自动检查页面、云函数、腾讯坐标、本地素材、包体预估、强特征密钥、私人文件和参赛材料。`FAIL` 必须修复；`WARN` 表示仍需在提交前完成的人工或外部条件。
+
+当前相册已独立分包：主包静态预估约0.25 MB，`assets`相册分包约1.63 MB，总体约1.88 MB；最终结果以微信开发者工具包体分析为准。
 
 ## 当前证据边界
 

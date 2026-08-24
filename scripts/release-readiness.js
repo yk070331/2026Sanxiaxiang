@@ -61,16 +61,20 @@ function checkProjectConfiguration() {
     ? pass('基础库版本', project.libVersion)
     : warn('基础库版本', '建议固定参赛演示使用的基础库版本');
 
+  const subpackagePages = (app.subPackages || []).flatMap(pkg =>
+    (pkg.pages || []).map(page => `${pkg.root}/${page}`)
+  );
+  const registeredPages = [...(app.pages || []), ...subpackagePages];
   const extensions = ['.js', '.json', '.wxml', '.wxss'];
   const missingPageFiles = [];
-  for (const page of app.pages || []) {
+  for (const page of registeredPages) {
     for (const extension of extensions) {
       const file = path.join(ROOT, 'miniprogram', `${page}${extension}`);
       if (!fs.existsSync(file)) missingPageFiles.push(normalize(path.relative(ROOT, file)));
     }
   }
   missingPageFiles.length === 0
-    ? pass('页面注册与四件套完整', `${(app.pages || []).length} 个页面`)
+    ? pass('页面注册与四件套完整', `${registeredPages.length} 个页面（含 ${subpackagePages.length} 个分包页面）`)
     : fail('页面注册与四件套完整', missingPageFiles.join('、'));
 
   if (app.permission && app.permission['scope.userLocation'] &&
@@ -151,24 +155,43 @@ function checkCoordinatesAndAssets() {
 
 function checkPackageSize() {
   const project = readJson('project.config.json');
+  const app = readJson('miniprogram/app.json');
+  const miniRoot = path.join(ROOT, 'miniprogram');
   const ignored = new Set(((project.packOptions && project.packOptions.ignore) || [])
     .filter(item => item.type === 'file')
     .map(item => normalize(item.value)));
-  const files = walkFiles(path.join(ROOT, 'miniprogram'));
-  let total = 0;
+  const subpackageRoots = (app.subPackages || []).map(pkg => normalize(pkg.root).replace(/\/$/, ''));
+  const files = walkFiles(miniRoot);
   const included = [];
   for (const file of files) {
-    const relative = normalize(path.relative(path.join(ROOT, 'miniprogram'), file));
+    const relative = normalize(path.relative(miniRoot, file));
     if (ignored.has(relative)) continue;
     const size = fs.statSync(file).size;
-    total += size;
     included.push({ relative, size });
   }
-  const target = 2 * 1024 * 1024;
-  total <= target
-    ? pass('主包静态体积预估', `${bytesLabel(total)}，不含工具二次处理`)
-    : warn('主包静态体积预估', `${bytesLabel(total)}，超过 2 MB 目标；以开发者工具预览/上传结果为准`);
-  const largest = included.sort((a, b) => b.size - a.size).slice(0, 3)
+
+  const belongsToRoot = (relative, root) => relative === root || relative.startsWith(`${root}/`);
+  const mainFiles = included.filter(item => !subpackageRoots.some(root => belongsToRoot(item.relative, root)));
+  const mainTotal = mainFiles.reduce((sum, item) => sum + item.size, 0);
+  const packageTarget = 2 * 1024 * 1024;
+  mainTotal <= packageTarget
+    ? pass('主包静态体积预估', `${bytesLabel(mainTotal)}，不含分包及工具二次处理`)
+    : fail('主包静态体积预估', `${bytesLabel(mainTotal)}，超过 2 MB 目标`);
+
+  for (const root of subpackageRoots) {
+    const packageFiles = included.filter(item => belongsToRoot(item.relative, root));
+    const packageTotal = packageFiles.reduce((sum, item) => sum + item.size, 0);
+    packageTotal <= packageTarget
+      ? pass(`分包体积预估（${root}）`, bytesLabel(packageTotal))
+      : fail(`分包体积预估（${root}）`, `${bytesLabel(packageTotal)}，超过 2 MB 目标`);
+  }
+
+  const total = included.reduce((sum, item) => sum + item.size, 0);
+  total <= 20 * 1024 * 1024
+    ? pass('小程序总体积预估', bytesLabel(total))
+    : fail('小程序总体积预估', `${bytesLabel(total)}，超过 20 MB 目标`);
+
+  const largest = mainFiles.sort((a, b) => b.size - a.size).slice(0, 3)
     .map(item => `${item.relative} ${(item.size / 1024).toFixed(0)} KB`).join('；');
   pass('主包最大文件记录', largest);
 }

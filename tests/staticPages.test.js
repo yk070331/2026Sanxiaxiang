@@ -38,8 +38,13 @@ for (const file of sourceFiles.filter(item => item.endsWith('.json'))) {
 
 const appConfig = JSON.parse(fs.readFileSync(path.join(miniRoot, 'app.json'), 'utf8'));
 assert(appConfig.pages.includes('pages/admin/index'), 'admin page must be registered');
+const subpackagePages = (appConfig.subPackages || []).flatMap(pkg =>
+  (pkg.pages || []).map(page => `${pkg.root}/${page}`)
+);
+const registeredPages = [...appConfig.pages, ...subpackagePages];
+assert(subpackagePages.includes('assets/gallery/index'), 'gallery must be registered in assets subpackage');
 
-for (const page of appConfig.pages) {
+for (const page of registeredPages) {
   const base = path.join(miniRoot, page);
   for (const extension of ['.js', '.json', '.wxml', '.wxss']) {
     assert(fs.existsSync(`${base}${extension}`), `missing page file: ${page}${extension}`);
@@ -70,7 +75,7 @@ assert(tourSource.includes('可到达入口/大坝'), 'reachable reservoir entra
 assert(tourSource.includes('syncCheckIn'), 'study tour is not connected to visitor sync');
 
 const gallerySource = fs.readFileSync(
-  path.join(miniRoot, 'pages', 'photo-gallery', 'index.js'),
+  path.join(miniRoot, 'assets', 'gallery', 'index.js'),
   'utf8'
 );
 assert(gallerySource.includes('getPhotoGallery'), 'photo gallery is not connected to published content');

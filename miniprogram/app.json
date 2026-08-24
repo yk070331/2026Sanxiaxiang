@@ -4,7 +4,6 @@
     "pages/village-detail/index",
     "pages/site-detail/index",
     "pages/red-stories/index",
-    "pages/photo-gallery/index",
     "pages/study-tour/index",
     "pages/route-recommend/index",
     "pages/village-info/index",
@@ -12,6 +11,13 @@
     "pages/knowledge-quiz/index",
     "pages/correction/index",
     "pages/privacy/index"
+  ],
+  "subPackages": [
+    {
+      "root": "assets",
+      "name": "gallery",
+      "pages": ["gallery/index"]
+    }
   ],
   "window": {
     "backgroundColor": "#8B0000",
