@@ -526,15 +526,6 @@ def toc_story():
 
 def project_stats():
     git_base = ["git", "-c", f"safe.directory={ROOT.as_posix()}"]
-    head = subprocess.run(
-        git_base + ["rev-parse", "--short", "HEAD"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        check=True,
-    ).stdout.strip()
     commit_count = int(subprocess.run(
         git_base + ["rev-list", "--count", "HEAD"],
         cwd=ROOT,
@@ -551,7 +542,7 @@ def project_stats():
         for path in (ROOT / root_name).rglob("*")
         if path.is_file() and "node_modules" not in path.parts
     )
-    return {"head": head, "commit_count": commit_count, "test_count": test_count, "source_count": source_count}
+    return {"commit_count": commit_count, "test_count": test_count, "source_count": source_count}
 
 
 def build_design_pdf():
@@ -755,13 +746,13 @@ def build_design_pdf():
         ["管理审核服务", "cloudfunctions/contentAdmin/index.js"],
         ["离线打卡", "miniprogram/utils/visitorSync.js"],
         ["离线纠错", "miniprogram/utils/correctionService.js"],
-        ["可信与隐私中心", "miniprogram/pages/privacy-center/index.js"],
+        ["可信与隐私中心", "miniprogram/pages/privacy/index.js"],
         ["素材分包相册", "miniprogram/assets/gallery/index.js"],
         ["证书海报", "miniprogram/pages/study-tour/index.js"],
         ["发布门禁", "scripts/release-readiness.js"],
         ["静态回归", "tests/staticPages.test.js"],
     ], [50 * mm, 124 * mm])]
-    story += [p(f"文档内容以本地 Git main 分支提交 {stats['head']} 为准；推送完成后与公开 GitHub 仓库 main 分支保持一致。", "small")]
+    story += [p("文档内容以本地 Git main 分支当前生成版本为准；网络恢复并推送后与公开 GitHub 仓库 main 分支保持一致。", "small")]
 
     doc = CompetitionDocTemplate(DESIGN_PDF, "产品设计说明书")
     doc.multiBuild(story)
