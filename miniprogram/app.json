@@ -9,7 +9,8 @@
     "pages/route-recommend/index",
     "pages/village-info/index",
     "pages/admin/index",
-    "pages/knowledge-quiz/index"
+    "pages/knowledge-quiz/index",
+    "pages/correction/index"
   ],
   "window": {
     "backgroundColor": "#8B0000",

@@ -76,6 +76,9 @@
     <button class="btn-outline" wx:if="{{source === 'village_site' && site.villageId}}" bindtap="onGoToVillage">
       ← 返回{{site.villageName}}
     </button>
+    <navigator class="btn-outline" url="/pages/correction/index?targetType=place&amp;targetId={{site.id}}&amp;targetName={{site.name}}">
+      ✎ 我要纠错
+    </navigator>
     <button class="btn-primary" bindtap="onNavigate">
       {{canNavigate ? '🧭 导航到此地' : '📍 坐标待核验'}}
     </button>
