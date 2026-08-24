@@ -1,8 +1,13 @@
 // app.js
+const { resolveCloudEnvId } = require('./config/env.js');
+
 App({
-  onLaunch: function () {
+  onLaunch() {
+    const env = resolveCloudEnvId();
     this.globalData = {
-      env: "",
+      env,
+      cloudReady: false,
+      cloudInitError: '',
       careMode: Boolean(wx.getStorageSync('qiaolinCareMode')),
       isOnline: true,
       networkType: 'unknown',
@@ -13,12 +18,17 @@ App({
       }
     };
 
-    // 当前版本全部使用本地数据；配置云环境 ID 后再初始化，避免空 env 启动报错。
-    if (wx.cloud && this.globalData.env) {
-      wx.cloud.init({
-        env: this.globalData.env,
-        traceUser: true
-      });
+    // 未配置云环境时保留完整本地体验；配置错误也不阻断小程序启动。
+    if (wx.cloud && env) {
+      try {
+        wx.cloud.init({ env, traceUser: true });
+        this.globalData.cloudReady = true;
+      } catch (error) {
+        this.globalData.cloudInitError = error && error.message
+          ? error.message
+          : 'cloud-init-failed';
+        console.warn('[app] 云开发初始化失败，已切换本地模式', error);
+      }
     }
 
     // 获取系统信息
@@ -27,7 +37,7 @@ App({
     this.globalData.statusBarHeight = systemInfo.statusBarHeight;
     this.globalData.navBarHeight = systemInfo.platform === 'android' ? 48 : 44;
 
-    // 核心文字数据均为本地数据；网络状态用于提示地图和远程素材可能不可用。
+    // 网络状态用于提示地图和远程素材可能不可用。
     wx.getNetworkType({
       success: result => {
         this.globalData.networkType = result.networkType;

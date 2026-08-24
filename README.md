@@ -14,7 +14,7 @@
 - 5道带解释和资料来源的红色知识闯关。
 - 游客纠错、离线保存、联网补传与后台待处理记录。
 - 村级录入员、实践团队管理员、审核员三级资料审核流程。
-- 云端只读取已发布内容；云服务异常时自动回退本地已审核数据。
+- 云端只读取已发布内容；云服务未配置或初始化失败时自动回退本地已审核数据。
 - 关怀模式、定位拒绝提示、无效二维码提示和未核验坐标保护。
 
 ## 已核验地图位置
@@ -31,6 +31,7 @@
 - [产品设计说明书](output/pdf/红韵乔林-产品设计说明书.pdf)
 - [开发过程与测试报告](output/pdf/红韵乔林-开发过程与测试报告.pdf)
 - [山东省软件大赛参赛基线](山东省软件大赛参赛基线.md)
+- [发布前检查与微信开发者工具说明](参赛材料/发布前检查与微信开发者工具说明.md)
 - [参赛材料目录](参赛材料/)
 
 PDF 可通过以下命令重复生成和校验：
@@ -45,6 +46,8 @@ python scripts/verify_competition_pdfs.py
 
 ```text
 miniprogram/
+  config/
+    env.js              云环境本机覆盖与默认值
   pages/
     index/              首页地图
     village-detail/     村落详情
@@ -67,7 +70,7 @@ cloudfunctions/
 tests/                  自动化与静态回归测试
 参赛材料/               需求、架构、数据库、合规、演示资料
 output/pdf/             正式参赛PDF
-scripts/                PDF生成、渲染与验证工具
+scripts/                PDF工具与发布体检脚本
 ```
 
 ## 本地运行
@@ -75,31 +78,33 @@ scripts/                PDF生成、渲染与验证工具
 1. 使用微信开发者工具导入仓库根目录。
 2. AppID 当前配置为 `wxdc2fcf76559c970f`；无权限时请换成自己的测试号。
 3. 未配置云环境也可以浏览本地内容、图片、路线并完成本地打卡。
-4. 需要云端功能时，在 `miniprogram/app.js` 的 `globalData.env` 填入云环境ID。
+4. 需要云端功能时，在 `miniprogram/config/env.js` 填写 `DEFAULT_ENV_ID`；也可在调试器执行 `wx.setStorageSync('qiaolinCloudEnvId', '你的云环境ID')` 仅供本机使用。
 5. 上传并部署 `contentService`、`visitorRecords`、`contentAdmin` 三个云函数。
 6. 按 [管理后台部署与权限说明](参赛材料/管理后台部署与权限说明.md) 创建集合并配置 `adminRoles`。
 
-## 自动化测试
+## 自动化测试与发布体检
 
 ```powershell
 node tests/cloudfunctions.test.js
 node tests/visitorSync.test.js
 node tests/correctionService.test.js
 node tests/quizData.test.js
+node tests/appCloudInit.test.js
 node tests/staticPages.test.js
+node scripts/release-readiness.js
 ```
 
-当前结果：5组测试全部通过；静态回归检查122个小程序与云函数源码文件。
+发布体检会自动检查页面、云函数、腾讯坐标、本地素材、包体预估、强特征密钥、私人文件和参赛材料。`FAIL` 必须修复；`WARN` 表示仍需在提交前完成的人工或外部条件。
 
 ## 当前证据边界
 
-已经完成本地功能实现、云函数逻辑测试、页面静态回归、地图分享位置核对和正式参赛PDF生成。提交体验版前仍需完成：
+已经完成本地功能实现、云函数逻辑测试、页面静态回归、地图分享位置核对、云环境启动容错、发布体检和正式参赛PDF生成。提交体验版前仍需完成：
 
-- 微信开发者工具真实编译与包体检查。
+- 在微信开发者工具开启服务端口后进行真实编译、预览与包体检查。
 - 微信云环境部署及三个角色账号的权限验证。
 - Android和iOS真机定位、导航、扫码及弱网测试。
 - 六处旧址逐点坐标核验。
 - 实拍照片、人物照片和文物史料公开授权记录。
-- 真人语音讲解、体验码、3-5分钟演示视频和实地用户反馈。
+- 真人语音讲解、体验码、3–5分钟演示视频和实地用户反馈。
 
 未经核验的史料不会作为确定事实发布；AI修复或生成素材必须明确标注，不能冒充原始史料。
