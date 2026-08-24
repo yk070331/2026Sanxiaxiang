@@ -1,6 +1,5 @@
 <!--pages/red-stories/index.wxml - 红色故事页-->
 <view class="container">
-  <!-- 分类筛选栏 -->
   <scroll-view class="category-bar" scroll-x="true" enable-flex>
     <view
       class="category-item {{currentCategory === item.id ? 'active' : ''}}"
@@ -14,13 +13,11 @@
     </view>
   </scroll-view>
 
-  <!-- 故事列表 / 故事详情 -->
   <block wx:if="{{!currentStory}}">
-    <!-- 故事列表 -->
     <view class="stories-list">
       <view
         class="story-card"
-        wx:for="{{currentCategory === 'all' ? stories : stories}}"
+        wx:for="{{stories}}"
         wx:key="id"
         wx:for-item="story"
         wx:if="{{currentCategory === 'all' || story.category === currentCategory}}"
@@ -40,25 +37,23 @@
           <text class="story-card-title">{{story.title}}</text>
           <text class="story-card-excerpt">{{story.text.substring(0, 80)}}...</text>
           <view class="story-card-meta">
+            <text class="verification-badge {{story.verificationClass}}">{{story.verificationStatus}}</text>
             <text class="meta-author">🗣️ {{story.author}}</text>
             <text class="meta-date">📅 {{story.date}}</text>
-            <text class="meta-audio" wx:if="{{story.audioDuration}}">🔊 {{story.audioDuration}}</text>
+            <text class="meta-audio" wx:if="{{story.audioAvailable}}">🔊 {{story.audioDuration}}</text>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 空状态 -->
     <view class="empty-state" wx:if="{{stories.length === 0}}">
       <text class="empty-icon">📭</text>
       <text class="empty-text">暂无故事，实地采集内容整理中</text>
     </view>
   </block>
 
-  <!-- 故事详情页 -->
   <block wx:if="{{currentStory}}">
     <view class="story-detail">
-      <!-- 头图 -->
       <view class="detail-hero">
         <view class="detail-hero-placeholder">
           <text class="detail-hero-emoji">📜</text>
@@ -72,7 +67,6 @@
         </view>
       </view>
 
-      <!-- 音频播放器 -->
       <view class="audio-player" wx:if="{{currentStory.audio && currentStory.audioAvailable}}">
         <view class="audio-header">
           <text class="audio-label">🎙️ 村民口述原声音频</text>
@@ -105,11 +99,15 @@
       <view class="audio-player" wx:elif="{{currentStory.audio}}">
         <view class="audio-header">
           <text class="audio-label">🎙️ 口述音频待上传</text>
-          <text class="audio-source">上传素材后即可启用播放</text>
+          <text class="audio-source">上传并审核原始录音后即可启用</text>
         </view>
       </view>
 
-      <!-- 故事正文 -->
+      <view class="verification-panel {{currentStory.verificationClass}}">
+        <text class="verification-title">史料状态：{{currentStory.verificationStatus}}</text>
+        <text class="verification-note">{{currentStory.verificationNote}}</text>
+      </view>
+
       <view class="detail-content">
         <view class="content-header">
           <view class="label-dot"></view>
@@ -118,15 +116,13 @@
         <text class="content-body">{{currentStory.text}}</text>
       </view>
 
-      <!-- 作者/来源信息 -->
       <view class="detail-source">
-        <text class="source-label">采集来源</text>
-        <text class="source-text">{{currentStory.author}}</text>
-        <text class="source-text">采集日期：{{currentStory.date}}</text>
+        <text class="source-label">来源与审核信息</text>
+        <text class="source-text">当前署名：{{currentStory.author}}</text>
+        <text class="source-text">记录日期：{{currentStory.date}}</text>
         <text class="source-text">关联地点：{{currentStory.relatedSite || '乔林村'}}</text>
       </view>
 
-      <!-- 关闭按钮 -->
       <view class="detail-close">
         <button class="btn-outline" bindtap="onCloseStory">← 返回故事列表</button>
       </view>

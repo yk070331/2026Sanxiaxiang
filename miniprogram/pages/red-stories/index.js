@@ -1,7 +1,52 @@
 // pages/red-stories/index.js
 const { redStories } = require('../../utils/data.js');
 
-const audioManager = wx.getBackgroundAudioManager ? wx.getBackgroundAudioManager() : null;
+// 史料状态单独维护，防止未经核验的村级口述在界面中被误读为确定史实。
+const verificationProfiles = {
+  story_1: {
+    verificationStatus: '基础史实已核验',
+    verificationClass: 'verified',
+    verificationNote: '八角楼相关基础史实可依据公开权威资料核对；当前口述人姓名、采录日期和原声音频仍待提供原始记录。'
+  },
+  story_2: {
+    verificationStatus: '村级口述待审核',
+    verificationClass: 'pending',
+    verificationNote: '需补充标语原文照片、口述授权、采访原始记录及村级或文旅部门审核意见。'
+  },
+  story_3: {
+    verificationStatus: '村级史料待审核',
+    verificationClass: 'pending',
+    verificationNote: '党支部成立时间、首任书记及相关人物信息需以地方党史、档案或审核材料为准。'
+  },
+  story_4: {
+    verificationStatus: '村级口述待审核',
+    verificationClass: 'pending',
+    verificationNote: '需补充红军井现场铭牌、口述授权、采访原始记录和审核单位。'
+  },
+  story_5: {
+    verificationStatus: '基础史实已核验',
+    verificationClass: 'verified',
+    verificationNote: '黄洋界保卫战基础史实可依据权威公开资料核对；当前署名与采录日期仍需原始材料确认。'
+  },
+  story_6: {
+    verificationStatus: '基础史实已核验',
+    verificationClass: 'verified',
+    verificationNote: '“朱德的扁担”基础史实可依据权威公开资料核对，后续应补充具体版本来源。'
+  }
+};
+
+function buildDisplayStories(stories) {
+  return stories.map(story => ({
+    ...story,
+    ...(verificationProfiles[story.id] || {
+      verificationStatus: '待审核',
+      verificationClass: 'pending',
+      verificationNote: '尚未录入审核依据，不作为确定史实发布。'
+    })
+  }));
+}
+
+const displayStories = buildDisplayStories(redStories);
 
 Page({
   data: {
@@ -22,24 +67,17 @@ Page({
   },
 
   onLoad(options) {
-    this.setData({ stories: redStories });
-
-    // 如果传入了指定故事ID，直接打开
+    this.setData({ stories: displayStories });
     if (options.storyId) {
-      const story = redStories.find(s => s.id === options.storyId);
-      if (story) {
-        this.openStory(story);
-      }
+      const story = displayStories.find(item => item.id === options.storyId);
+      if (story) this.openStory(story);
     }
   },
 
-  // 分类切换
   onCategoryChange(e) {
-    const category = e.currentTarget.dataset.id;
-    this.setData({ currentCategory: category });
+    this.setData({ currentCategory: e.currentTarget.dataset.id });
   },
 
-  // 打开故事详情
   openStory(story) {
     this.setData({
       currentStory: story,
@@ -52,48 +90,36 @@ Page({
   },
 
   onStoryTap(e) {
-    const id = e.currentTarget.dataset.id;
-    const story = redStories.find(s => s.id === id);
+    const story = displayStories.find(item => item.id === e.currentTarget.dataset.id);
     if (story) this.openStory(story);
   },
 
-  // 关闭故事详情
   onCloseStory() {
     this.stopAudio();
     this.setData({ currentStory: null, storyId: '' });
   },
 
-  // 阻止冒泡
   onStopPropagation() {},
 
-  // 音频播放控制
   onToggleAudio() {
-    if (this.data.isPlaying) {
-      this.pauseAudio();
-    } else {
-      this.playAudio();
-    }
+    if (this.data.isPlaying) this.pauseAudio();
+    else this.playAudio();
   },
 
   playAudio() {
     const story = this.data.currentStory;
-    if (!story || !story.audio) {
+    if (!story || !story.audio || !story.audioAvailable) {
       wx.showToast({ title: '音频资源暂未上传', icon: 'none' });
       return;
     }
 
-    // 使用 InnerAudioContext 播放
     if (!this.innerAudioCtx) {
       this.innerAudioCtx = wx.createInnerAudioContext();
       this.innerAudioCtx.onPlay(() => {
         this.setData({ isPlaying: true, playingStoryId: story.id });
       });
-      this.innerAudioCtx.onPause(() => {
-        this.setData({ isPlaying: false });
-      });
-      this.innerAudioCtx.onStop(() => {
-        this.setData({ isPlaying: false });
-      });
+      this.innerAudioCtx.onPause(() => this.setData({ isPlaying: false }));
+      this.innerAudioCtx.onStop(() => this.setData({ isPlaying: false }));
       this.innerAudioCtx.onEnded(() => {
         this.setData({ isPlaying: false, audioProgress: 0, audioCurrentTime: '00:00' });
       });
@@ -105,46 +131,37 @@ Page({
           audioProgress: Math.round((current / duration) * 100)
         });
       });
-      this.innerAudioCtx.onError((err) => {
-        console.error('音频播放失败:', err);
+      this.innerAudioCtx.onError(error => {
+        console.error('音频播放失败:', error);
         wx.showToast({ title: '音频播放失败', icon: 'none' });
         this.setData({ isPlaying: false });
       });
     }
 
     this.innerAudioCtx.src = story.audio;
-    // 显示音频时长
-    if (story.audioDuration) {
-      this.setData({ audioDuration: story.audioDuration });
-    }
+    if (story.audioDuration) this.setData({ audioDuration: story.audioDuration });
     this.innerAudioCtx.play();
   },
 
   pauseAudio() {
-    if (this.innerAudioCtx) {
-      this.innerAudioCtx.pause();
-    }
+    if (this.innerAudioCtx) this.innerAudioCtx.pause();
   },
 
   stopAudio() {
-    if (this.innerAudioCtx) {
-      this.innerAudioCtx.stop();
-    }
+    if (this.innerAudioCtx) this.innerAudioCtx.stop();
   },
 
-  // 音频进度条拖动
   onAudioSeek(e) {
     if (!this.innerAudioCtx) return;
-    const percent = e.detail.value;
     const duration = this.innerAudioCtx.duration || 1;
-    this.innerAudioCtx.seek((percent / 100) * duration);
+    this.innerAudioCtx.seek((e.detail.value / 100) * duration);
   },
 
   formatTime(seconds) {
     if (!seconds || isNaN(seconds)) return '00:00';
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60);
-    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   },
 
   onUnload() {
