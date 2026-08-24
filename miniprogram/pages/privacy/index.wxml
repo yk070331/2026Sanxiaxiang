@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-kicker">TRUST & PRIVACY</text>
+    <text class="hero-title">可信内容，也尊重你的数据</text>
+    <text class="hero-desc">红韵乔林只在完成定位导航、研学打卡和游客纠错所必需的范围内使用信息。</text>
+  </view>
+
+  <view class="status-card">
+    <view class="status-heading">
+      <text class="section-title">当前状态</text>
+      <text class="refresh-time">刷新于 {{lastRefreshedAt}}</text>
+    </view>
+    <view class="status-grid">
+      <view class="status-item">
+        <text class="status-value {{locationAuthorized ? 'ok' : 'muted'}}">{{locationAuthorized ? '已授权' : '未授权'}}</text>
+        <text class="status-label">位置权限</text>
+      </view>
+      <view class="status-item">
+        <text class="status-value {{cloudEnabled ? 'ok' : 'muted'}}">{{cloudEnabled ? '已连接' : '本地模式'}}</text>
+        <text class="status-label">云端同步</text>
+      </view>
+      <view class="status-item">
+        <text class="status-value">{{summary.storedItemCount}}</text>
+        <text class="status-label">本地记录类型</text>
+      </view>
+    </view>
+    <button class="secondary-button" bindtap="onOpenSettings">管理微信权限</button>
+  </view>
+
+  <view class="section-card">
+    <text class="section-title">本机学习记录</text>
+    <view class="data-list">
+      <view class="data-row"><text>已完成打卡</text><text>{{summary.checkInCount}} 个点位</text></view>
+      <view class="data-row"><text>等待同步打卡</text><text>{{summary.pendingCheckInCount}} 条</text></view>
+      <view class="data-row"><text>等待提交纠错</text><text>{{summary.pendingCorrectionCount}} 条</text></view>
+      <view class="data-row"><text>知识闯关最高分</text><text>{{summary.highScore}} 分</text></view>
+      <view class="data-row"><text>关怀模式</text><text>{{summary.careMode ? '开启' : '关闭'}}</text></view>
+    </view>
+    <button class="danger-button" bindtap="onClearLocalData">清除本地学习记录</button>
+    <text class="helper-text">清除操作仅影响当前手机，不会删除已经同步到云端的内容。</text>
+  </view>
+
+  <view class="section-card">
+    <text class="section-title">我们如何使用信息</text>
+    <view class="policy-item">
+      <text class="policy-index">01</text>
+      <view class="policy-copy">
+        <text class="policy-title">当前位置</text>
+        <text class="policy-text">只在你点击“我的位置”或需要导航时请求，用于计算距离、展示位置和打开微信地图；不会持续后台定位。</text>
+      </view>
+    </view>
+    <view class="policy-item">
+      <text class="policy-index">02</text>
+      <view class="policy-copy">
+        <text class="policy-title">微信用户标识</text>
+        <text class="policy-text">启用云端后由微信云函数取得 OPENID，用于区分打卡、纠错和管理员角色，不收集手机号、通讯录或身份证号。</text>
+      </view>
+    </view>
+    <view class="policy-item">
+      <text class="policy-index">03</text>
+      <view class="policy-copy">
+        <text class="policy-title">纠错内容</text>
+        <text class="policy-text">你主动提交的文字和联系方式仅用于核实内容；联系方式不是必填项，不在游客端公开展示。</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <text class="section-title">内容可信机制</text>
+    <text class="body-text">地图坐标记录坐标系与来源；历史内容区分“基础史实已核验”和“村级史料待审核”；人物照片、文物和口述材料在授权与身份未确认前均显示核验提示。</text>
+    <button class="primary-button" bindtap="onGoToCorrection">发现问题，提交纠错</button>
+  </view>
+
+  <view class="footer-note">
+    <text>版本说明：参赛开发版</text>
+    <text>数据公开前须经村级或文旅审核</text>
+  </view>
+  <view class="safe-area-bottom"></view>
+</view>

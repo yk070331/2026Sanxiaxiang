@@ -10,7 +10,8 @@
     "pages/village-info/index",
     "pages/admin/index",
     "pages/knowledge-quiz/index",
-    "pages/correction/index"
+    "pages/correction/index",
+    "pages/privacy/index"
   ],
   "window": {
     "backgroundColor": "#8B0000",
