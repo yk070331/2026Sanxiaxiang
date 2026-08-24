@@ -1,5 +1,6 @@
 // pages/study-tour/index.js
 const { studyTour, routePresets, mapPlaces } = require('../../utils/data.js');
+const { flushPendingCheckIns, syncCheckIn } = require('../../utils/visitorSync.js');
 const CHECK_IN_STORAGE_KEY = 'qiaolinStudyTourCheckIns';
 
 Page({
@@ -28,7 +29,7 @@ Page({
             latitude: reservoir.latitude,
             longitude: reservoir.longitude,
             description: reservoir.desc,
-            tips: '水库点位为水面中心，导航时请以现场道路和安全提示为准。'
+            tips: '点位为腾讯地图核验的可到达入口/大坝，请遵守现场道路与安全提示。'
           };
         }
         return studyTour.segments.find(segment => segment.id === segmentId);
@@ -47,7 +48,7 @@ Page({
       : studyTour;
 
     // 计算仅站点（排除起点终点）
-    const siteSegments = activeTour.segments.filter(s => s.type === 'site');
+    const siteSegments = activeTour.segments.filter(segment => segment.type === 'site');
     const totalSegments = siteSegments.length;
     const storedCheckIns = wx.getStorageSync(CHECK_IN_STORAGE_KEY) || {};
     const checkedIn = siteSegments.reduce((result, segment) => {
@@ -64,6 +65,13 @@ Page({
       careMode: Boolean(getApp().globalData.careMode),
       activePresetId: preset ? preset.id : ''
     });
+
+    // 恢复网络后自动补传游客此前离线完成的打卡。
+    flushPendingCheckIns().then(result => {
+      if (result.synced > 0) {
+        wx.showToast({ title: `已同步${result.synced}条打卡`, icon: 'success' });
+      }
+    }).catch(() => {});
   },
 
   onShow() {
@@ -73,7 +81,7 @@ Page({
   // 切换当前查看的站点段
   onSegmentTap(e) {
     const order = Number(e.currentTarget.dataset.order);
-    const segment = this.data.tour.segments.find(s => s.order === order);
+    const segment = this.data.tour.segments.find(item => item.order === order);
     if (segment) {
       this.setData({ currentSegment: order - 1 });
     }
@@ -82,12 +90,12 @@ Page({
   // 打卡
   onCheckIn(e) {
     const segmentId = e.currentTarget.dataset.id;
-    this.markCheckIn(segmentId);
+    this.markCheckIn(segmentId, { method: 'manual' });
   },
 
   markCheckIn(segmentId, options = {}) {
-    const isValidSite = this.data.siteSegments.some(segment => segment.id === segmentId);
-    if (!isValidSite) {
+    const segment = this.data.siteSegments.find(item => item.id === segmentId);
+    if (!segment) {
       wx.showToast({ title: '未找到对应打卡点', icon: 'none' });
       return false;
     }
@@ -104,6 +112,13 @@ Page({
     this.setData({ checkedIn, checkInCount });
     wx.setStorageSync(CHECK_IN_STORAGE_KEY, checkedIn);
 
+    // 云端不可用时自动加入补传队列，不影响现场弱网打卡。
+    syncCheckIn({
+      routeId: this.data.activePresetId || 'qiaolin_full',
+      placeId: segment.siteId || segment.id,
+      method: options.method || 'manual'
+    }).catch(() => {});
+
     // 振动反馈
     wx.vibrateShort({ type: 'medium' });
 
@@ -115,8 +130,8 @@ Page({
         confirmText: '太棒了',
         showCancel: false
       });
-    } else {
-      if (!options.silent) wx.showToast({
+    } else if (!options.silent) {
+      wx.showToast({
         title: `已打卡 ${checkInCount}/${this.data.totalSegments}`,
         icon: 'success'
       });
@@ -141,7 +156,7 @@ Page({
           });
           return;
         }
-        this.markCheckIn(segment.id, { silent: true });
+        this.markCheckIn(segment.id, { silent: true, method: 'scan' });
         const segmentIndex = this.data.tour.segments.findIndex(item => item.id === segment.id);
         if (segmentIndex >= 0) this.setData({ currentSegment: segmentIndex });
         wx.showToast({ title: '扫码打卡成功', icon: 'success' });

@@ -68,6 +68,10 @@ Page({
     }));
   },
 
+  onGoToAdmin() {
+    wx.navigateTo({ url: '/pages/admin/index' });
+  },
+
   onShareAppMessage() {
     return {
       title: '红韵乔林 - 乔林村情信息',

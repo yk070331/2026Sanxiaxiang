@@ -45,5 +45,17 @@
     </view>
   </view>
 
+  <!-- 资料维护入口对游客开放可见，但云函数会按 OPENID 校验管理员角色。 -->
+  <view class="info-content">
+    <view class="info-card">
+      <view class="info-card-header">
+        <view class="label-dot"></view>
+        <text class="info-card-title">村级资料共建</text>
+      </view>
+      <text class="info-row-value">村级录入员、实践团队管理员和审核员可在此维护资料；普通游客无法写入或发布内容。</text>
+      <button class="btn-primary" bindtap="onGoToAdmin">资料录入与审核</button>
+    </view>
+  </view>
+
   <view class="safe-area-bottom"></view>
 </view>

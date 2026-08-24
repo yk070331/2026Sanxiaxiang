@@ -7,7 +7,8 @@
     "pages/photo-gallery/index",
     "pages/study-tour/index",
     "pages/route-recommend/index",
-    "pages/village-info/index"
+    "pages/village-info/index",
+    "pages/admin/index"
   ],
   "window": {
     "backgroundColor": "#8B0000",

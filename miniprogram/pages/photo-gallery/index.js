@@ -1,5 +1,5 @@
 // pages/photo-gallery/index.js
-const { photoGallery } = require('../../utils/data.js');
+const { getPhotoGallery } = require('../../utils/contentService.js');
 
 Page({
   data: {
@@ -11,7 +11,10 @@ Page({
       { id: 'nature', name: '水源山林' }
     ],
     currentCategory: 'all',
+    allPhotos: [],
     photos: [],
+    dataSource: 'local',
+    loading: true,
     // 大图浏览
     showPreview: false,
     previewIndex: 0,
@@ -19,9 +22,15 @@ Page({
     previewItems: []
   },
 
-  onLoad(options) {
+  async onLoad(options = {}) {
     const category = options.category || 'all';
-    this.setData({ currentCategory: category });
+    this.setData({ currentCategory: category, loading: true });
+    const result = await getPhotoGallery();
+    this.setData({
+      allPhotos: result.data,
+      dataSource: result.source,
+      loading: false
+    });
     this.filterPhotos(category);
   },
 
@@ -33,12 +42,10 @@ Page({
   },
 
   filterPhotos(category) {
-    let photos;
-    if (category === 'all') {
-      photos = photoGallery;
-    } else {
-      photos = photoGallery.filter(p => p.category === category);
-    }
+    const allPhotos = this.data.allPhotos || [];
+    const photos = category === 'all'
+      ? allPhotos
+      : allPhotos.filter(photo => photo.category === category);
     this.setData({ photos });
   },
 
@@ -76,10 +83,7 @@ Page({
     const urls = this.data.photos
       .filter(photo => photo.available !== false)
       .map(photo => photo.src);
-    wx.previewImage({
-      current: src,
-      urls: urls
-    });
+    wx.previewImage({ current: src, urls });
   },
 
   // 阻止冒泡（空函数）

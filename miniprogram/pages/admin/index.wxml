@@ -1,0 +1,69 @@
+<view class="container">
+  <view class="admin-hero">
+    <text class="hero-title">乔林村资料审核后台</text>
+    <text class="hero-desc">录入、审核并发布村级红色文化资料</text>
+  </view>
+
+  <view class="warning-card" wx:if="{{!cloudReady}}">
+    当前未配置云环境。游客端本地内容不受影响，后台功能需部署云函数后使用。
+  </view>
+
+  <view class="panel">
+    <text class="panel-title">新增资料</text>
+    <picker
+      mode="selector"
+      range="{{collections}}"
+      range-key="name"
+      value="{{collectionIndex}}"
+      bindchange="onCollectionChange"
+    >
+      <view class="picker-field">资料类型：{{collections[collectionIndex].name}} ▾</view>
+    </picker>
+    <input
+      class="form-field"
+      placeholder="资料标题"
+      value="{{form.title}}"
+      data-field="title"
+      bindinput="onFieldInput"
+    />
+    <textarea
+      class="form-field form-textarea"
+      placeholder="资料内容或说明"
+      value="{{form.description}}"
+      data-field="description"
+      bindinput="onFieldInput"
+    ></textarea>
+    <input
+      class="form-field"
+      placeholder="资料来源或采访对象"
+      value="{{form.source}}"
+      data-field="source"
+      bindinput="onFieldInput"
+    />
+    <view class="action-row">
+      <button class="btn-secondary" loading="{{loading}}" bindtap="onSaveDraft">保存草稿</button>
+      <button class="btn-primary" loading="{{loading}}" bindtap="onSubmitReview">提交审核</button>
+    </view>
+  </view>
+
+  <view class="message" wx:if="{{message}}">{{message}}</view>
+
+  <view class="panel">
+    <view class="panel-header">
+      <text class="panel-title">待审核资料</text>
+      <button class="refresh-btn" loading="{{loading}}" bindtap="onLoadQueue">刷新</button>
+    </view>
+    <view class="queue-card" wx:for="{{queue}}" wx:key="_id">
+      <text class="queue-title">{{item.title || '未命名资料'}}</text>
+      <text class="queue-desc">{{item.description || item.desc}}</text>
+      <text class="queue-source">来源：{{item.source || '待补充'}}</text>
+      <view class="action-row">
+        <button class="btn-reject" data-id="{{item._id}}" bindtap="onReject">驳回补充</button>
+        <button class="btn-approve" data-id="{{item._id}}" bindtap="onApprove">审核发布</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="safe-area-bottom"></view>
+</view>
+
