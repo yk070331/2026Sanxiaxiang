@@ -42,6 +42,7 @@
       <button class="btn-outline progress-btn" bindtap="onShowCertificate">
         {{checkInCount === totalSegments && totalSegments > 0 ? '🎓 查看研学证书' : '🎓 证书待解锁'}}
       </button>
+      <navigator class="btn-outline progress-btn" url="/pages/knowledge-quiz/index">🧠 红色知识闯关</navigator>
     </view>
   </view>
 

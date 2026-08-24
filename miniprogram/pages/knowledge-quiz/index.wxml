@@ -1,0 +1,58 @@
+<view class="quiz-page">
+  <block wx:if="{{!completed}}">
+    <view class="quiz-hero">
+      <text class="eyebrow">乔林红色研学 · 知识检验</text>
+      <text class="hero-title">红色知识闯关</text>
+      <text class="hero-desc">每道题均来自项目现有驻村采集资料，答题后可查看解释与来源。</text>
+    </view>
+
+    <view class="progress-card">
+      <view class="progress-row">
+        <text>第 {{currentIndex + 1}} / {{questions.length}} 题</text>
+        <text>答对 {{correctCount}} 题</text>
+      </view>
+      <view class="progress-track">
+        <view class="progress-value" style="width: {{(currentIndex + 1) / questions.length * 100}}%;"></view>
+      </view>
+    </view>
+
+    <view class="question-card">
+      <text class="question-title">{{currentQuestion.question}}</text>
+      <view class="option-list">
+        <button
+          class="option-button {{answered && index === currentQuestion.answerIndex ? 'correct' : ''}} {{answered && index === selectedIndex && index !== currentQuestion.answerIndex ? 'wrong' : ''}}"
+          wx:for="{{currentQuestion.options}}"
+          wx:key="*this"
+          data-index="{{index}}"
+          bindtap="onSelectOption"
+        >
+          <text class="option-letter">{{index === 0 ? 'A' : (index === 1 ? 'B' : (index === 2 ? 'C' : 'D'))}}</text>
+          <text class="option-text">{{item}}</text>
+        </button>
+      </view>
+
+      <view class="answer-panel" wx:if="{{answered}}">
+        <text class="answer-result {{selectedIndex === currentQuestion.answerIndex ? 'right-text' : 'wrong-text'}}">
+          {{selectedIndex === currentQuestion.answerIndex ? '回答正确' : '回答错误'}}
+        </text>
+        <text class="answer-explanation">{{currentQuestion.explanation}}</text>
+        <text class="answer-source">资料来源：{{currentQuestion.source}}</text>
+      </view>
+
+      <button class="next-button" bindtap="onNextQuestion">
+        {{currentIndex + 1 === questions.length ? '查看闯关结果' : '下一题'}}
+      </button>
+    </view>
+  </block>
+
+  <view class="result-card" wx:else>
+    <view class="result-badge">🏅</view>
+    <text class="result-title">闯关完成</text>
+    <text class="result-score">{{scorePercent}}分</text>
+    <text class="result-summary">共答对 {{correctCount}} / {{questions.length}} 题</text>
+    <text class="result-high">历史最高：{{highScore}}分</text>
+    <text class="result-note">历史内容以村级审核资料为准；答错题可重新挑战并再次查看出处。</text>
+    <button class="next-button" bindtap="onRestart">重新挑战</button>
+    <button class="back-button" bindtap="onBackToTour">返回研学路线</button>
+  </view>
+</view>
