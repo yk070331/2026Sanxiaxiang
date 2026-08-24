@@ -12,7 +12,11 @@ Page({
     totalSegments: 0,
     siteSegments: [],
     careMode: false,
-    activePresetId: ''
+    activePresetId: '',
+    certificateVisible: false,
+    certificateImage: '',
+    certificateDate: '',
+    generatingCertificate: false
   },
 
   onLoad(options = {}) {
@@ -226,13 +230,160 @@ Page({
       wx.showToast({ title: '完成全部旧址打卡后解锁', icon: 'none' });
       return;
     }
+    if (this.data.certificateImage) {
+      this.setData({ certificateVisible: true });
+      return;
+    }
     const date = new Date();
     const dateText = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-    wx.showModal({
-      title: '乔林红色研学证书',
-      content: `你已于${dateText}完成“${this.data.tour.title}”全部红色旧址打卡。`,
-      confirmText: '完成',
-      showCancel: false
+    this.setData({ generatingCertificate: true, certificateDate: dateText });
+    wx.showLoading({ title: '正在生成证书' });
+    this.drawCertificatePoster(dateText);
+  },
+
+  drawCertificatePoster(dateText) {
+    const width = 750;
+    const height = 1000;
+    const context = wx.createCanvasContext('certificateCanvas', this);
+    const tourTitle = this.data.tour ? this.data.tour.title : '乔林村红色研学路线';
+
+    context.setFillStyle('#F7F0DF');
+    context.fillRect(0, 0, width, height);
+    context.setFillStyle('#8B0000');
+    context.fillRect(0, 0, width, 190);
+    context.setFillStyle('#B78A2F');
+    context.fillRect(28, 28, width - 56, 8);
+    context.fillRect(28, height - 36, width - 56, 8);
+    context.setStrokeStyle('#B78A2F');
+    context.setLineWidth(3);
+    context.strokeRect(28, 28, width - 56, height - 56);
+    context.strokeRect(44, 44, width - 88, height - 88);
+
+    context.setTextAlign('center');
+    context.setFillStyle('#FFFFFF');
+    context.setFontSize(30);
+    context.fillText('红韵乔林 · 井冈山红色研学', width / 2, 76);
+    context.setFontSize(64);
+    context.fillText('研 学 证 书', width / 2, 148);
+
+    context.setFillStyle('#7A1111');
+    context.setFontSize(30);
+    context.fillText('CERTIFICATE OF COMPLETION', width / 2, 245);
+    context.setFillStyle('#2D2722');
+    context.setFontSize(38);
+    context.fillText('授予：研学参与者', width / 2, 325);
+
+    context.setStrokeStyle('#C9AE72');
+    context.setLineWidth(2);
+    context.beginPath();
+    context.moveTo(150, 352);
+    context.lineTo(600, 352);
+    context.stroke();
+
+    context.setFillStyle('#4E463D');
+    context.setFontSize(28);
+    context.fillText('已完成', width / 2, 418);
+    context.setFillStyle('#8B0000');
+    context.setFontSize(40);
+    const displayTitle = tourTitle.length > 16 ? `${tourTitle.slice(0, 16)}…` : tourTitle;
+    context.fillText(`“${displayTitle}”`, width / 2, 476);
+    context.setFillStyle('#4E463D');
+    context.setFontSize(28);
+    context.fillText(`全部 ${this.data.totalSegments} 处红色旧址学习与打卡`, width / 2, 535);
+
+    const badges = ['寻访旧址', '聆听故事', '完成打卡'];
+    badges.forEach((badge, index) => {
+      const x = 188 + index * 188;
+      context.setFillStyle('#FFF9EC');
+      context.setStrokeStyle('#B78A2F');
+      context.setLineWidth(2);
+      context.beginPath();
+      context.arc(x, 635, 58, 0, Math.PI * 2);
+      context.fill();
+      context.stroke();
+      context.setFillStyle('#8B0000');
+      context.setFontSize(24);
+      context.fillText(badge, x, 644);
+    });
+
+    context.setStrokeStyle('#B01919');
+    context.setLineWidth(6);
+    context.beginPath();
+    context.arc(580, 785, 76, 0, Math.PI * 2);
+    context.stroke();
+    context.setLineWidth(2);
+    context.beginPath();
+    context.arc(580, 785, 64, 0, Math.PI * 2);
+    context.stroke();
+    context.setFillStyle('#B01919');
+    context.setFontSize(25);
+    context.fillText('红韵乔林', 580, 780);
+    context.setFontSize(20);
+    context.fillText('研学纪念', 580, 815);
+
+    context.setTextAlign('left');
+    context.setFillStyle('#564D43');
+    context.setFontSize(25);
+    context.fillText(`完成日期：${dateText}`, 90, 780);
+    context.fillText('地点：江西省井冈山市茅坪镇乔林村', 90, 828);
+    context.setFillStyle('#8B7B67');
+    context.setFontSize(20);
+    context.fillText('本证书为研学纪念凭证，打卡记录保存在当前设备或已配置云端。', 90, 900);
+
+    context.draw(false, () => {
+      setTimeout(() => {
+        wx.canvasToTempFilePath({
+          canvasId: 'certificateCanvas',
+          width,
+          height,
+          destWidth: 1500,
+          destHeight: 2000,
+          fileType: 'png',
+          quality: 1,
+          success: result => {
+            wx.hideLoading();
+            this.setData({
+              generatingCertificate: false,
+              certificateImage: result.tempFilePath,
+              certificateVisible: true
+            });
+          },
+          fail: () => {
+            wx.hideLoading();
+            this.setData({ generatingCertificate: false });
+            wx.showToast({ title: '证书生成失败，请重试', icon: 'none' });
+          }
+        }, this);
+      }, 100);
+    });
+  },
+
+  onStopPropagation() {},
+
+  onCloseCertificate() {
+    this.setData({ certificateVisible: false });
+  },
+
+  onSaveCertificate() {
+    if (!this.data.certificateImage) return;
+    wx.saveImageToPhotosAlbum({
+      filePath: this.data.certificateImage,
+      success: () => wx.showToast({ title: '证书已保存', icon: 'success' }),
+      fail: error => {
+        const denied = error && /auth deny|authorize/i.test(error.errMsg || '');
+        if (!denied) {
+          wx.showToast({ title: '保存失败，请重试', icon: 'none' });
+          return;
+        }
+        wx.showModal({
+          title: '需要相册权限',
+          content: '请在微信设置中允许保存图片，之后再次点击保存。',
+          confirmText: '去设置',
+          success: result => {
+            if (result.confirm) wx.openSetting();
+          }
+        });
+      }
     });
   },
 

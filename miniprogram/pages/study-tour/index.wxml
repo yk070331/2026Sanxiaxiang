@@ -141,5 +141,24 @@
     </text>
   </view>
 
+  <canvas
+    canvas-id="certificateCanvas"
+    class="certificate-canvas"
+    width="750"
+    height="1000"
+  ></canvas>
+
+  <view class="certificate-mask" wx:if="{{certificateVisible}}" bindtap="onCloseCertificate">
+    <view class="certificate-dialog" catchtap="onStopPropagation">
+      <text class="certificate-dialog-title">乔林红色研学证书</text>
+      <image class="certificate-preview" src="{{certificateImage}}" mode="widthFix"></image>
+      <text class="certificate-date">完成日期：{{certificateDate}}</text>
+      <view class="certificate-actions">
+        <button class="btn-primary" bindtap="onSaveCertificate">保存到相册</button>
+        <button class="btn-outline" bindtap="onCloseCertificate">关闭</button>
+      </view>
+    </view>
+  </view>
+
   <view class="safe-area-bottom"></view>
 </view>
