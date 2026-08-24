@@ -1,0 +1,11 @@
+{
+  "name": "visitor-records",
+  "version": "1.0.0",
+  "description": "红韵乔林游客打卡与纠错服务",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "wx-server-sdk": "~2.4.0"
+  }
+}
+
