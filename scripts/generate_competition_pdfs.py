@@ -524,7 +524,38 @@ def toc_story():
     return [p("目录", "toc_title"), toc, PageBreak()]
 
 
+def project_stats():
+    git_base = ["git", "-c", f"safe.directory={ROOT.as_posix()}"]
+    head = subprocess.run(
+        git_base + ["rev-parse", "--short", "HEAD"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=True,
+    ).stdout.strip()
+    commit_count = int(subprocess.run(
+        git_base + ["rev-list", "--count", "HEAD"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=True,
+    ).stdout.strip())
+    test_count = len(list((ROOT / "tests").glob("*.test.js")))
+    source_count = sum(
+        1
+        for root_name in ("miniprogram", "cloudfunctions")
+        for path in (ROOT / root_name).rglob("*")
+        if path.is_file() and "node_modules" not in path.parts
+    )
+    return {"head": head, "commit_count": commit_count, "test_count": test_count, "source_count": source_count}
+
+
 def build_design_pdf():
+    stats = project_stats()
     story = []
     story += cover("产品设计说明书", "从红色资源展示走向可导航、可研学、可审核的数字乡村服务")
     story += toc_story()
@@ -635,7 +666,7 @@ def build_design_pdf():
         "二维码支持 qiaolin://site/site_1 或小程序路径参数，识别后完成扫码打卡并进入对应旧址。",
         "知识闯关首批5题，每题固定四个选项，并展示解释与驻村资料来源。",
         "涉及待核验人物身份、年份和照片归属的内容不进入题库。",
-        "全部旧址打卡后可查看研学证书文本；分享海报为下一阶段视觉交付。",
+        "全部旧址打卡后，系统在小程序端生成可分享的研学证书海报，支持预览并保存到手机相册，形成“参观—学习—打卡—成果留存”的闭环。",
     ])
     story += [h2("5.4 真实素材与文物史实")]
     img_dir = ROOT / "miniprogram" / "assets" / "images"
@@ -678,6 +709,8 @@ def build_design_pdf():
         "实拍图片、历史证明材料和人物照片建立素材台账，区分地点已标注、授权待补和史实待核验。",
         "AI修复、上色或生成图片必须显著标注，不能冒充原始史料；当前人物照片采用审慎说明。",
         "定位只用于即时地图与导航，不默认上传游客轨迹；纠错页不要求姓名和手机号。",
+        "可信与隐私中心集中展示定位、云同步和本地记录状态，支持管理微信权限并一键清除本地打卡、纠错、答题和关怀模式数据。",
+        "红色故事明确区分“基础史实已核验”和“村级口述/史料待审核”，村情数据标注为调研台账，不作为官方统计发布。",
         "公开 GitHub 仓库忽略私人配置，不提交云环境密钥、私人联系方式和未经授权原图。",
     ])
 
@@ -694,7 +727,7 @@ def build_design_pdf():
     story += [h1("8. 创新性、应用价值与推广")]
     story += [h2("8.1 项目创新")]
     story += bullets([
-        "从静态红色地图升级为“导航—讲解—打卡—答题—纠错—审核”的闭环产品。",
+        "从静态红色地图升级为“导航—讲解—打卡—答题—证书—纠错—审核”的闭环产品。",
         "把史料严谨性作为系统能力：来源字段、状态流转、角色权限和游客纠错共同约束。",
         "把乡村弱网作为核心场景设计，而非上线后的补丁。",
         "路线推荐采用可解释规则，第一版稳定可演示，后续可在审核数据基础上扩展智能问答。",
@@ -705,10 +738,11 @@ def build_design_pdf():
     story += [h1("9. 当前完成度与上线准备")]
     story += [table([
         ["状态", "内容"],
-        ["已实现并自动验证", "地图搜索筛选、腾讯核验位置、路线推荐、图集、文物史实、扫码/手动打卡、离线同步、知识闯关、游客纠错、管理审核、静态回归"],
-        ["已设计但需真实环境验证", "微信云环境、adminRoles真实账号、云数据库读写、体验版长期访问"],
+        ["已实现并自动验证", "地图搜索筛选、腾讯核验位置、路线推荐、相册分包、文物史实、扫码/手动打卡、离线同步、知识闯关、证书海报、游客纠错、管理审核、可信与隐私中心、静态回归"],
+        ["工程量化结果", f"{stats['test_count']}个自动化测试脚本全部通过；发布检查21项通过、4项待真实环境；主包约0.26MB、素材分包约1.63MB"],
+        ["已设计但需真实环境验证", "微信云环境、adminRoles真实账号、云数据库读写、证书保存相册、体验版长期访问"],
         ["需现场补充", "六处旧址腾讯分享位置/实测坐标、授权证明、真机兼容性与用户反馈"],
-        ["下一阶段增强", "语音实录、图片纠错附件、证书海报、研学任务统计、多村复制"],
+        ["下一阶段增强", "语音实录、图片纠错附件、研学任务统计、多村复制"],
     ], [43 * mm, 131 * mm])]
     story += [callout("上线门槛：未完成真实云环境部署、真机地图/扫码验证和素材授权补录前，不应把小程序描述为正式运营版本；当前版本定位为可运行的高质量参赛原型与试点版本。", PALE_RED)]
 
@@ -721,9 +755,13 @@ def build_design_pdf():
         ["管理审核服务", "cloudfunctions/contentAdmin/index.js"],
         ["离线打卡", "miniprogram/utils/visitorSync.js"],
         ["离线纠错", "miniprogram/utils/correctionService.js"],
+        ["可信与隐私中心", "miniprogram/pages/privacy-center/index.js"],
+        ["素材分包相册", "miniprogram/assets/gallery/index.js"],
+        ["证书海报", "miniprogram/pages/study-tour/index.js"],
+        ["发布门禁", "scripts/release-readiness.js"],
         ["静态回归", "tests/staticPages.test.js"],
     ], [50 * mm, 124 * mm])]
-    story += [p("文档内容以 GitHub 仓库 main 分支、提交 693a1d3 及其后续提交为准。", "small")]
+    story += [p(f"文档内容以本地 Git main 分支提交 {stats['head']} 为准；推送完成后与公开 GitHub 仓库 main 分支保持一致。", "small")]
 
     doc = CompetitionDocTemplate(DESIGN_PDF, "产品设计说明书")
     doc.multiBuild(story)
@@ -736,13 +774,14 @@ def get_git_log():
 
 
 def build_process_pdf():
+    stats = project_stats()
     story = []
     story += cover("开发过程与测试报告", "以 Git 迭代、问题修复、自动化验证和真实上线风险为证据")
     story += toc_story()
 
     story += [h1("1. 开发过程概览")]
     story += [p("项目采用增量迭代方式推进：先修正真实地图位置和核心浏览体验，再补充实拍素材与史料台账，随后建立云端内容、游客行为与管理审核三类服务，最后完成知识闯关、游客纠错和参赛交付物。所有稳定节点均提交至公开 GitHub 仓库。")]
-    story += [metrics([("12次", "当前 Git 提交"), ("3个", "业务云函数"), ("5组", "自动化测试脚本"), ("122个", "静态检查源码文件")])]
+    story += [metrics([(f"{stats['commit_count']}次", "当前 Git 提交"), ("3个", "业务云函数"), (f"{stats['test_count']}组", "自动化测试脚本"), (f"{stats['source_count']}个", "静态检查源码文件")])]
     story += [h2("1.1 迭代记录")]
     git_rows = [["提交", "日期", "主要内容"]] + get_git_log()
     story += [table(git_rows, [25 * mm, 30 * mm, 119 * mm])]
@@ -758,14 +797,15 @@ def build_process_pdf():
     story += [h1("2. 工程结构与质量控制")]
     story += [table([
         ["目录", "内容", "质量控制"],
-        ["miniprogram/pages", "地图、村落、旧址、图集、研学、答题、纠错、管理页", "页面四件套完整性与 WXML 事件校验"],
+        ["miniprogram/pages", "地图、村落、旧址、研学、答题、纠错、管理、隐私页", "页面四件套完整性与 WXML 事件校验"],
+        ["miniprogram/assets", "实拍/史料图片与分包相册页", "主包减重、分包路径和回退素材校验"],
         ["miniprogram/utils", "数据、云端读取、打卡补传、纠错补传、题库", "服务与页面分层、失败路径测试"],
         ["cloudfunctions", "contentService、visitorRecords、contentAdmin", "身份、白名单、角色、参数四层校验"],
         ["tests", "云函数、离线同步、题库、页面静态回归", "Node.js 可重复执行"],
         ["参赛材料", "需求、架构、数据库、测试、合规、演示", "实现与文档相互引用"],
     ], [36 * mm, 78 * mm, 60 * mm])]
     story += [h2("2.1 自动化执行命令")]
-    story += [p("node tests/cloudfunctions.test.js<br/>node tests/visitorSync.test.js<br/>node tests/correctionService.test.js<br/>node tests/quizData.test.js<br/>node tests/staticPages.test.js", "code")]
+    story += [p("逐项执行：node tests/&lt;name&gt;.test.js（共11个脚本）<br/>发布检查：node scripts/release-readiness.js", "code")]
 
     story += [h1("3. 关键问题与解决过程")]
     story += [h2("3.1 地图位置错误")]
@@ -787,7 +827,7 @@ def build_process_pdf():
     story += [p("人物照片、烈士证明书和口述史存在授权与核验差异。项目没有把待核验身份用于知识题，页面以“相关人物肖像”“具体信息以原件及审核资料为准”等方式审慎表述，并把来源、授权和审核状态纳入数据模型。")]
 
     story += [h1("4. 自动化测试结果")]
-    story += [callout("2026-08-24 最新执行：5组测试全部通过；静态回归检查 122 个 miniprogram 与 cloudfunctions 源码文件。测试使用本地 Node.js 与可记录的微信/数据库模拟对象，不能替代真实微信云环境与真机验证。")]
+    story += [callout(f"2026-08-24 最新执行：{stats['test_count']}组测试全部通过；静态回归检查 {stats['source_count']} 个 miniprogram 与 cloudfunctions 文件；发布检查为21项通过、4项提醒、0项失败。测试使用本地 Node.js 与可记录的微信/数据库模拟对象，不能替代真实微信云环境与真机验证。")]
     story += [h2("4.1 测试分层")]
     story += [table([
         ["层级", "测试脚本", "覆盖范围", "结果"],
@@ -795,6 +835,7 @@ def build_process_pdf():
         ["打卡同步", "visitorSync.test.js", "离线入队、去重、恢复补传、在线直传", "通过"],
         ["纠错同步", "correctionService.test.js", "离线保存、联网补传、云端参数", "通过"],
         ["题库质量", "quizData.test.js", "ID、四选项、答案范围、解释与来源", "通过"],
+        ["专项体验回归", "6个专项脚本", "云环境降级、史料状态、隐私清理、村情标注、证书生成与保存", "通过"],
         ["工程静态回归", "staticPages.test.js", "JS/JSON、页面四件套、事件绑定、坐标、临时文件", "通过"],
     ], [28 * mm, 43 * mm, 78 * mm, 25 * mm])]
     story += [h2("4.2 核心安全与同步用例")]
@@ -810,8 +851,11 @@ def build_process_pdf():
         ["A08", "相同打卡重复离线入队", "队列保持一条", "通过"],
         ["A09", "离线纠错恢复网络", "逐条补传并清空成功项", "通过"],
         ["A10", "题目缺来源或答案越界", "自动化测试失败", "通过"],
-        ["A11", "WXML 引用不存在的方法", "静态回归失败", "通过"],
-        ["A12", "水库仍含“水面中心”说法", "静态回归失败", "通过"],
+        ["A11", "云环境未配置或初始化失败", "继续使用本地审核内容并明确状态", "通过"],
+        ["A12", "证书解锁、绘制、导出和保存", "生成1500×2000图片并调用相册保存", "通过"],
+        ["A13", "故事与村情缺少核验标识", "专项测试失败", "通过"],
+        ["A14", "用户清除本地隐私数据", "打卡、纠错、答题和偏好一并清除", "通过"],
+        ["A15", "相册素材进入主包", "发布检查提示包体结构异常", "通过"],
     ], [18 * mm, 62 * mm, 70 * mm, 24 * mm])]
 
     story += [h1("5. 人工测试计划与当前证据边界")]
@@ -837,6 +881,7 @@ def build_process_pdf():
         ["刘资育相关史料", "文物史实分类、谨慎描述、未进入题库", "村委/家属核验身份、年代与公开范围"],
         ["游客位置", "仅用于即时定位和导航", "完善微信隐私保护指引"],
         ["游客OPENID", "只在云函数与数据库用于记录归属", "设置数据访问规则和保留期限"],
+        ["本地游客记录", "可信与隐私中心可查看状态并一键清除", "真机复核清除反馈与系统权限跳转"],
         ["第三方地图", "腾讯地图分享位置、微信地图能力", "按平台规则配置合法域名/插件并列明来源"],
         ["公开仓库", "忽略私人配置和密钥", "发布前再次扫描敏感信息与大文件"],
     ], [38 * mm, 72 * mm, 64 * mm])]
@@ -850,8 +895,8 @@ def build_process_pdf():
         ["0:55-1:25", "村落、水库位置与导航", "腾讯核验坐标"],
         ["1:25-2:05", "60分钟路线推荐", "规则可解释的个性化研学"],
         ["2:05-2:45", "相册、文物史实与来源", "真实素材和合规"],
-        ["2:45-3:25", "扫码、打卡、知识闯关", "现场互动闭环"],
-        ["3:25-3:55", "纠错、弱网与关怀模式", "真实乡村使用考虑"],
+        ["2:45-3:25", "扫码、打卡、知识闯关、证书海报", "现场互动与成果传播闭环"],
+        ["3:25-3:55", "纠错、弱网、关怀与隐私中心", "真实乡村使用和隐私考虑"],
         ["3:55-4:20", "管理审核、Git与测试", "可维护性与工程质量"],
         ["4:20-4:30", "多村复制路线", "应用价值"],
     ], [28 * mm, 74 * mm, 72 * mm])]
@@ -872,12 +917,12 @@ def build_process_pdf():
         ["六处旧址坐标待核验", "无法安全提供逐点导航", "逐处腾讯分享位置或现场采集，不用推测坐标", "P0"],
         ["素材授权记录不完整", "可能影响公开展示和合规得分", "补签授权与拍摄台账，必要时撤下素材", "P0"],
         ["音频文件不完整", "讲解体验弱于方案描述", "优先录制1分钟真人简版并配字幕", "P1"],
-        ["证书仅文本弹窗", "分享传播能力不足", "增加canvas海报并做隐私提示", "P1"],
+        ["证书海报尚未真机保存验证", "相册授权差异可能影响留存", "Android与iOS分别测试允许、拒绝和再次授权", "P1"],
         ["缺少实地用户数据", "应用价值证据不足", "组织师生/村民试用并记录反馈与修复", "P1"],
     ], [44 * mm, 52 * mm, 56 * mm, 22 * mm])]
 
     story += [h1("附录A. 最新测试输出")]
-    story += [p("cloudfunctions.test.js: all tests passed<br/>visitorSync.test.js: all tests passed<br/>correctionService.test.js: offline queue and cloud flush passed<br/>quizData.test.js: all questions include valid answers, explanations and sources<br/>staticPages.test.js: 122 source files checked, all tests passed", "code")]
+    story += [p(f"11个测试脚本全部通过：cloudfunctions、visitorSync、correctionService、quizData、appCloudInit、storyVerification、privacyCenter、villageDataReview、certificatePoster、certificatePosterRuntime、staticPages。<br/>staticPages.test.js: {stats['source_count']} source files checked, all tests passed<br/>release-readiness.js: 21 PASS / 4 WARN / 0 FAIL", "code")]
     story += [p("说明：以上为本地自动化证据；真实开发者工具、云环境和真机测试完成后，应在本报告后追加设备矩阵、截图和缺陷复测记录。", "small")]
 
     doc = CompetitionDocTemplate(PROCESS_PDF, "开发过程与测试报告")
