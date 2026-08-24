@@ -652,6 +652,8 @@ def build_design_pdf():
         ["研学线", "约60分钟", "六处旧址与故事讲解", "学生团队、普通游客"],
         ["半日乡村线", "约半天", "六处旧址、古村文化、乔林水库生态观察", "深度研学、亲子家庭"],
     ], [31 * mm, 28 * mm, 68 * mm, 47 * mm])]
+    story += [p("路线里程与分段距离为前期规划参考，已在界面统一标注“待实测”；六处旧址坐标未核验时，“前往下一站”只切换到下一站卡片并说明原因，核验后才调用地图导航。", "small")]
+
     story += [h2("5.3 研学互动与知识来源")]
     story += bullets([
         "二维码支持 qiaolin://site/site_1 或小程序路径参数，识别后完成扫码打卡并进入对应旧址。",
@@ -796,7 +798,7 @@ def build_process_pdf():
         ["参赛材料", "需求、架构、数据库、测试、合规、演示", "实现与文档相互引用"],
     ], [36 * mm, 78 * mm, 60 * mm])]
     story += [h2("2.1 自动化执行命令")]
-    story += [p("逐项执行：node tests/&lt;name&gt;.test.js（共11个脚本）<br/>发布检查：node scripts/release-readiness.js", "code")]
+    story += [p(f"逐项执行：node tests/&lt;name&gt;.test.js（共{stats['test_count']}个脚本）<br/>发布检查：node scripts/release-readiness.js", "code")]
 
     story += [h1("3. 关键问题与解决过程")]
     story += [h2("3.1 地图位置错误")]
@@ -816,6 +818,8 @@ def build_process_pdf():
     story += [p("打卡与纠错都采用“先本地可用、再尝试云端、失败入队、恢复补传”的策略。打卡队列按路线和点位去重；纠错保留独立线索并限制为最近50条。图集云端读取失败则回退到本地已审核素材。")]
     story += [h2("3.4 史料真实性")]
     story += [p("人物照片、烈士证明书和口述史存在授权与核验差异。项目没有把待核验身份用于知识题，页面以“相关人物肖像”“具体信息以原件及审核资料为准”等方式审慎表述，并把来源、授权和审核状态纳入数据模型。")]
+    story += [h2("3.5 路线距离与下一站导航真实性")]
+    story += [p("旧址逐点坐标尚未取得腾讯地图分享位置，因此路线里程和分段距离仅作为前期规划参考并统一标注待实测。系统自动选择第一处未打卡旧址作为下一站；若坐标未核验，只切换站点卡并明确不提供推测导航，待录入真实坐标后才打开微信地图。")]
 
     story += [h1("4. 自动化测试结果")]
     story += [callout(f"2026-08-24 最新执行：{stats['test_count']}组测试全部通过；静态回归检查 {stats['source_count']} 个 miniprogram 与 cloudfunctions 文件；发布检查为21项通过、4项提醒、0项失败。测试使用本地 Node.js 与可记录的微信/数据库模拟对象，不能替代真实微信云环境与真机验证。")]
@@ -826,7 +830,7 @@ def build_process_pdf():
         ["打卡同步", "visitorSync.test.js", "离线入队、去重、恢复补传、在线直传", "通过"],
         ["纠错同步", "correctionService.test.js", "离线保存、联网补传、云端参数", "通过"],
         ["题库质量", "quizData.test.js", "ID、四选项、答案范围、解释与来源", "通过"],
-        ["专项体验回归", "6个专项脚本", "云环境降级、史料状态、隐私清理、村情标注、证书生成与保存", "通过"],
+        ["专项体验回归", "7个专项脚本", "云环境降级、史料状态、隐私清理、村情标注、证书、下一站与距离披露", "通过"],
         ["工程静态回归", "staticPages.test.js", "JS/JSON、页面四件套、事件绑定、坐标、临时文件", "通过"],
     ], [28 * mm, 43 * mm, 78 * mm, 25 * mm])]
     story += [h2("4.2 核心安全与同步用例")]
@@ -847,6 +851,7 @@ def build_process_pdf():
         ["A13", "故事与村情缺少核验标识", "专项测试失败", "通过"],
         ["A14", "用户清除本地隐私数据", "打卡、纠错、答题和偏好一并清除", "通过"],
         ["A15", "相册素材进入主包", "发布检查提示包体结构异常", "通过"],
+        ["A16", "下一站缺少核验坐标", "切换卡片并拒绝推测导航；有真实坐标才打开地图", "通过"],
     ], [18 * mm, 62 * mm, 70 * mm, 24 * mm])]
 
     story += [h1("5. 人工测试计划与当前证据边界")]
@@ -913,7 +918,7 @@ def build_process_pdf():
     ], [44 * mm, 52 * mm, 56 * mm, 22 * mm])]
 
     story += [h1("附录A. 最新测试输出")]
-    story += [p(f"11个测试脚本全部通过：cloudfunctions、visitorSync、correctionService、quizData、appCloudInit、storyVerification、privacyCenter、villageDataReview、certificatePoster、certificatePosterRuntime、staticPages。<br/>staticPages.test.js: {stats['source_count']} source files checked, all tests passed<br/>release-readiness.js: 21 PASS / 4 WARN / 0 FAIL", "code")]
+    story += [p(f"{stats['test_count']}个测试脚本全部通过：cloudfunctions、visitorSync、correctionService、quizData、appCloudInit、storyVerification、privacyCenter、villageDataReview、certificatePoster、certificatePosterRuntime、nextStopNavigation、staticPages。<br/>staticPages.test.js: {stats['source_count']} source files checked, all tests passed<br/>release-readiness.js: 21 PASS / 4 WARN / 0 FAIL", "code")]
     story += [p("说明：以上为本地自动化证据；真实开发者工具、云环境和真机测试完成后，应在本报告后追加设备矩阵、截图和缺陷复测记录。", "small")]
 
     doc = CompetitionDocTemplate(PROCESS_PDF, "开发过程与测试报告")

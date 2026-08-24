@@ -16,7 +16,9 @@ Page({
     certificateVisible: false,
     certificateImage: '',
     certificateDate: '',
-    generatingCertificate: false
+    generatingCertificate: false,
+    nextSiteId: '',
+    nextSiteName: '正在计算下一站'
   },
 
   onLoad(options = {}) {
@@ -59,6 +61,7 @@ Page({
       if (storedCheckIns[segment.id]) result[segment.id] = true;
       return result;
     }, {});
+    const nextSite = siteSegments.find(segment => !checkedIn[segment.id]);
 
     this.setData({
       tour: activeTour,
@@ -67,7 +70,9 @@ Page({
       checkedIn,
       checkInCount: Object.keys(checkedIn).length,
       careMode: Boolean(getApp().globalData.careMode),
-      activePresetId: preset ? preset.id : ''
+      activePresetId: preset ? preset.id : '',
+      nextSiteId: nextSite ? nextSite.id : '',
+      nextSiteName: nextSite ? nextSite.name : '全部旧址已完成'
     });
 
     // 恢复网络后自动补传游客此前离线完成的打卡。
@@ -113,7 +118,13 @@ Page({
     checkedIn[segmentId] = true;
     const checkInCount = Object.keys(checkedIn).length;
 
-    this.setData({ checkedIn, checkInCount });
+    const nextSite = this.getNextUncheckedSite(checkedIn);
+    this.setData({
+      checkedIn,
+      checkInCount,
+      nextSiteId: nextSite ? nextSite.id : '',
+      nextSiteName: nextSite ? nextSite.name : '全部旧址已完成'
+    });
     wx.setStorageSync(CHECK_IN_STORAGE_KEY, checkedIn);
 
     // 云端不可用时自动加入补传队列，不影响现场弱网打卡。
@@ -188,6 +199,40 @@ Page({
     }
   },
 
+  getNextUncheckedSite(checkedIn = this.data.checkedIn) {
+    return this.data.siteSegments.find(segment => !checkedIn[segment.id]) || null;
+  },
+
+  // 前往下一处尚未打卡的旧址。坐标未核验时只切换卡片，不发起错误导航。
+  onNavigateToNext() {
+    const segment = this.getNextUncheckedSite();
+    if (!segment) {
+      this.onShowCertificate();
+      return;
+    }
+    const segmentIndex = this.data.tour.segments.findIndex(item => item.id === segment.id);
+    if (segmentIndex >= 0) this.setData({ currentSegment: segmentIndex });
+    if (!Number.isFinite(segment.latitude) || !Number.isFinite(segment.longitude)) {
+      wx.showModal({
+        title: `下一站：${segment.name}`,
+        content: '已切换到下一站卡片。该旧址坐标仍待腾讯地图分享位置核验，当前不提供推测导航。',
+        showCancel: false
+      });
+      return;
+    }
+    this.openSegmentLocation(segment);
+  },
+
+  openSegmentLocation(segment) {
+    wx.openLocation({
+      latitude: segment.latitude,
+      longitude: segment.longitude,
+      name: segment.name,
+      address: '江西省吉安市井冈山市茅坪镇乔林村',
+      scale: 17
+    });
+  },
+
   // 一键导航到当前站点
   onNavigateToSegment(e) {
     const segmentId = e.currentTarget.dataset.id;
@@ -196,13 +241,7 @@ Page({
       wx.showToast({ title: '该点位坐标待核验', icon: 'none' });
       return;
     }
-    wx.openLocation({
-      latitude: segment.latitude,
-      longitude: segment.longitude,
-      name: segment.name,
-      address: '江西省吉安市井冈山市茅坪镇乔林村',
-      scale: 17
-    });
+    this.openSegmentLocation(segment);
   },
 
   // 导航到路线起点

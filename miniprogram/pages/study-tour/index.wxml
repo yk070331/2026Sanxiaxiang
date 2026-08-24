@@ -37,6 +37,13 @@
     <view class="progress-bar">
       <view class="progress-fill" style="width: {{totalSegments > 0 ? checkInCount / totalSegments * 100 : 0}}%;"></view>
     </view>
+    <view class="next-stop-row">
+      <view class="next-stop-copy">
+        <text class="next-stop-label">下一处待打卡</text>
+        <text class="next-stop-name">{{nextSiteName}}</text>
+      </view>
+      <button class="next-stop-button" bindtap="onNavigateToNext">{{checkInCount === totalSegments && totalSegments > 0 ? '查看证书' : '前往下一站'}}</button>
+    </view>
     <view class="progress-actions">
       <button class="btn-outline progress-btn" bindtap="onScanSiteCode">▣ 扫码讲解与打卡</button>
       <button class="btn-outline progress-btn" bindtap="onShowCertificate">

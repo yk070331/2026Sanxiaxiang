@@ -131,7 +131,7 @@
           <view class="tour-card">
             <view class="tour-card-left">
               <text class="tour-card-icon">🚩</text>
-              <view class="tour-card-info"><text class="tour-card-title">2.3公里研学路线</text><text class="tour-card-desc">串联6处红色旧址 · 约2小时</text></view>
+              <view class="tour-card-info"><text class="tour-card-title">研学路线规划参考</text><text class="tour-card-desc">串联6处红色旧址 · 距离待现场实测</text></view>
             </view>
             <button class="btn-gold tour-nav-btn" bindtap="onGoToStudyTour">一键导航</button>
           </view>

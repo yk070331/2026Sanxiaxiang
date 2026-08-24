@@ -573,7 +573,7 @@ photoGallery.forEach(photo => {
 const studyTour = {
   id: 'tour_1',
   title: '乔林村红色研学路线',
-  totalDistance: '2.3公里',
+  totalDistance: '规划约2.3公里（待实测）',
   estimatedTime: '约2小时',
   difficulty: '轻松（含少量缓坡）',
   description: '本路线串联乔林村6处红色旧址，途经古村落核心区和自然景观带，全面展示乔林村的红色历史、古村风貌和自然生态。建议从村口古樟树出发，按顺序依次打卡。',
@@ -592,7 +592,7 @@ const studyTour = {
       name: '第一站：中共乔林支部旧址',
       type: 'site',
       siteId: 'site_5',
-      distance: '150m',
+      distance: '约150米（待实测）',
       description: '井冈山斗争时期最早建立的农村党支部之一，1928年春成立，首批党员5人。旧址为土木结构民房，保存较为完整。',
       tips: '重点参观党支部成立时的会议间和党员名册展板。',
       storyId: 'story_3'
@@ -603,7 +603,7 @@ const studyTour = {
       name: '第二站：乔林红军标语墙',
       type: 'site',
       siteId: 'site_1',
-      distance: '120m',
+      distance: '约120米（待实测）',
       description: '保存十余条红军时期标语，内容涉及土地革命、参军动员等，是研究红军基层宣传工作的珍贵实物。',
       tips: '标语在古建筑外墙，请注意光线角度以便拍照记录。',
       storyId: 'story_2'
@@ -614,7 +614,7 @@ const studyTour = {
       name: '第三站：乔林苏维埃政府旧址',
       type: 'site',
       siteId: 'site_2',
-      distance: '200m',
+      distance: '约200米（待实测）',
       description: '土地革命时期村苏维埃政府办公场所，内设土地部、粮食部、妇女部等部门，是当时村级政权建设的典范。',
       tips: '注意观察室内展出的分田登记册原件复制品。'
     },
@@ -624,7 +624,7 @@ const studyTour = {
       name: '第四站：红军粮仓旧址',
       type: 'site',
       siteId: 'site_3',
-      distance: '250m',
+      distance: '约250米（待实测）',
       description: '红军在乔林村设立的后勤补给粮仓，采用赣西传统粮仓建筑形式，通风防潮设计精巧。',
       tips: '粮仓内部展示了当年使用的度量衡器具，可以互动体验。'
     },
@@ -634,7 +634,7 @@ const studyTour = {
       name: '第五站：红军井',
       type: 'site',
       siteId: 'site_6',
-      distance: '180m',
+      distance: '约180米（待实测）',
       description: '1928年秋红军为村民挖的水井，至今水质清冽。井旁立有"红军井"石碑和故事介绍牌。',
       tips: '可以取水体验，但请勿污染井水。',
       storyId: 'story_4'
@@ -645,7 +645,7 @@ const studyTour = {
       name: '第六站：乔林红军哨口遗址',
       type: 'site',
       siteId: 'site_4',
-      distance: '350m',
+      distance: '约350米（待实测）',
       description: '位于村西北山脊上的红军防御工事遗址，视野开阔，可俯瞰整个乔林村及周边山谷。哨口保留有战壕、瞭望台遗迹。',
       tips: '此处为制高点，全程唯一有缓坡路段，请注意安全。山顶视野极佳，是合影留念的最佳位置。'
     },
@@ -654,7 +654,7 @@ const studyTour = {
       order: 8,
       name: '终点：乔林村文化广场',
       type: 'end',
-      distance: '450m（从哨口返回）',
+      distance: '约450米（从哨口返回，待实测）',
       description: '研学路线终点，设有红色文化主题展廊和休息区，可在此交流研学心得、集体合影。',
       tips: '文化广场有村史展板和特产展示区，不要错过。'
     }
@@ -668,7 +668,7 @@ const routePresets = [
     title: '30分钟初心线',
     duration: '30分钟',
     durationValue: '30',
-    distance: '约0.8公里',
+    distance: '规划约0.8公里（待实测）',
     difficulty: '轻松',
     mode: '步行',
     themes: ['革命历史', '红色人物'],
@@ -682,7 +682,7 @@ const routePresets = [
     title: '60分钟研学线',
     duration: '1小时',
     durationValue: '60',
-    distance: '约1.5公里',
+    distance: '规划约1.5公里（待实测）',
     difficulty: '标准',
     mode: '步行',
     themes: ['革命历史', '红色人物', '古村文化'],
@@ -696,7 +696,7 @@ const routePresets = [
     title: '半日乡村深度线',
     duration: '半天',
     durationValue: 'halfday',
-    distance: '约2.3公里',
+    distance: '规划约2.3公里（待实测）',
     difficulty: '深度',
     mode: '步行',
     themes: ['革命历史', '古村文化', '生态乡村'],

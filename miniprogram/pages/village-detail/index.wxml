@@ -126,8 +126,8 @@
     <view class="tour-banner-content">
       <text class="tour-banner-icon">🚩</text>
       <view class="tour-banner-text">
-        <text class="tour-banner-title">2.3公里红色研学路线</text>
-        <text class="tour-banner-desc">串联6处红色旧址 · 预计2小时 · 轻松徒步</text>
+        <text class="tour-banner-title">红色研学路线规划参考</text>
+        <text class="tour-banner-desc">串联6处红色旧址 · 建议约2小时 · 距离待实测</text>
       </view>
     </view>
     <text class="tour-banner-arrow">→</text>
