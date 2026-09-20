@@ -1,0 +1,22 @@
+.photo-page { background: #FFF8F0; min-height: 100vh; padding-bottom: 24rpx; }
+.intro { padding: 32rpx 28rpx 20rpx; }
+.heading { display: block; color: #8B0000; font-size: 36rpx; font-weight: 700; }
+.intro-note { display: block; margin: 14rpx 0; color: #776A5D; line-height: 1.7; font-size: 26rpx; }
+.back-gallery { color: #9A1515; font-size: 26rpx; padding: 12rpx 0; }
+.group-bar { white-space: nowrap; padding: 12rpx 0 20rpx; background: #FFF; }
+.group-bar .group-chip { display: inline-block; width: auto; margin: 0 0 0 16rpx; padding: 18rpx 22rpx; line-height: 1.4; font-size: 26rpx; background: #F5F0E9; color: #654F39; border-radius: 30rpx; }
+.group-bar .active { color: #FFF; background: #B40000; }
+.photo-card { margin: 24rpx 24rpx 0; background: #FFF; border-radius: 20rpx; overflow: hidden; }
+.photo { display: block; width: 100%; background: #EEE9E2; }
+.photo-copy { padding: 22rpx; }
+.photo-title { display: block; color: #2D2722; font-size: 32rpx; font-weight: 700; }
+.location { display: block; color: #996B25; font-size: 24rpx; margin: 12rpx 0; }
+.description { display: block; color: #655B50; font-size: 26rpx; line-height: 1.7; }
+.source { display: block; color: #897F75; font-size: 22rpx; margin-top: 16rpx; line-height: 1.6; }
+.preview { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; background: #111; color: #fff; }
+.preview-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 28rpx; }
+.preview-toolbar button { margin: 0; padding: 10rpx 18rpx; color: #fff; background: #333; font-size: 26rpx; line-height: 1.5; }
+.preview-swiper { flex: 1; min-height: 0; width: 100%; }
+.preview-image { width: 100%; height: 100%; }
+.preview-caption { padding: 20rpx 28rpx calc(24rpx + env(safe-area-inset-bottom)); }
+.preview-caption text { display: block; margin-top: 8rpx; font-size: 24rpx; }

@@ -129,6 +129,7 @@ function checkCoordinatesAndAssets() {
     : fail('乔林水库可达入口坐标', '坐标与已核准分享位置不一致');
 
   const requiredAssets = [];
+  requiredAssets.push(...require('../miniprogram/utils/contributedPhotos.js').photos.map(photo => photo.src));
   for (const item of [...data.redLandmarks, ...data.redVillages, ...data.mapPlaces]) {
     if (item.iconPath) requiredAssets.push(item.iconPath);
   }

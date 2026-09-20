@@ -4,6 +4,7 @@
  */
 
 const openPhotos = require('./openPhotos.js');
+const { photos: contributedPhotos } = require('./contributedPhotos.js');
 const narrationScripts = require('./narrationScripts.js');
 
 // ==================== 地图标记点 ====================
@@ -577,6 +578,21 @@ const photoGallery = [
 
 // 尚未上传对应实景图的条目保留占位状态，避免打开空白预览。
 photoGallery.push(...openPhotos);
+// 以对应主题照片补齐占位；地点未确认时同时替换旧的确定性描述。
+const replacements = { huangyangjie_monument: 'photo_6', aerial_village: 'photo_7', reservoir: 'photo_12', bamboo_path: 'photo_13', terraces: 'photo_14' };
+contributedPhotos.forEach(photo => {
+  const category = photo.group === 'nature' ? 'nature' : photo.group === 'reference' ? 'heritage' : 'revolutionary';
+  const entry = {
+    id: replacements[photo.id] || `contributed_${photo.id}`,
+    category, categoryName: { nature: '水源山林', heritage: '文物史实', revolutionary: '革命旧址' }[category],
+    title: photo.title, desc: photo.desc, src: photo.thumbnailSrc, date: photo.capturedAt,
+    available: true, sourceKind: photo.sourceKind, sourceLabel: photo.sourceLabel, scopeLabel: photo.locationLabel,
+    collectionPhotoId: photo.id, collectionGroup: photo.group
+  };
+  const index = photoGallery.findIndex(item => item.id === entry.id);
+  if (index >= 0) photoGallery[index] = entry;
+  else photoGallery.push(entry);
+});
 photoGallery.forEach(photo => {
   if (typeof photo.available !== 'boolean') {
     photo.available = false;

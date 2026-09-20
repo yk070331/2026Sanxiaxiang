@@ -54,6 +54,7 @@
         <text class="photo-date">{{photo.date}}</text>
         <text class="photo-scope" wx:if="{{photo.scopeLabel}}">{{photo.scopeLabel}}</text>
         <text class="photo-credit" wx:if="{{photo.license}}">{{photo.creator}} · {{photo.license}}</text>
+        <text class="photo-credit" wx:elif="{{photo.sourceLabel}}">{{photo.sourceLabel}}</text>
         <text class="photo-credit" wx:elif="{{!photo.available}}">待采集实景照片</text>
       </view>
     </view>

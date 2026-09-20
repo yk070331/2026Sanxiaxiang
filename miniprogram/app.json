@@ -17,6 +17,11 @@
       "root": "assets",
       "name": "gallery",
       "pages": ["gallery/index"]
+    },
+    {
+      "root": "contributions",
+      "name": "contributions",
+      "pages": ["gallery/index"]
     }
   ],
   "window": {

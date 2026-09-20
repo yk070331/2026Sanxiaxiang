@@ -1,10 +1,12 @@
 // pages/photo-gallery/index.js
 const { getPhotoGallery } = require('../../utils/contentService.js');
+const { photos: contributedPhotos } = require('../../utils/contributedPhotos.js');
 
 Page({
   data: {
     categories: [
       { id: 'all', name: '全部' },
+      { id: 'contributed', name: '补充照片' },
       { id: 'licensed', name: '开放图片' },
       { id: 'revolutionary', name: '革命旧址' },
       { id: 'heritage', name: '文物史实' },
@@ -51,9 +53,10 @@ Page({
     const allPhotos = this.data.allPhotos || [];
     const selected = category === 'all'
       ? allPhotos
-      : allPhotos.filter(photo => category === 'licensed' ? photo.sourceKind === 'open-license' : photo.category === category);
+      : allPhotos.filter(photo => category === 'licensed' ? photo.sourceKind === 'open-license' : category === 'contributed' ? photo.sourceKind === 'user-provided' : photo.category === category);
     const photos = selected.filter(photo => this.data.showPending || photo.available)
       .sort((a, b) => Number(Boolean(b.available)) - Number(Boolean(a.available))
+        || Number(b.sourceKind === 'user-provided') - Number(a.sourceKind === 'user-provided')
         || Number(b.sourceKind === 'open-license') - Number(a.sourceKind === 'open-license'));
     this.setData({ photos });
   },
@@ -79,7 +82,12 @@ Page({
       wx.showToast({ title: '实景照片待上传', icon: 'none' });
       return;
     }
-    const previewItems = this.data.photos.filter(item => item.available !== false);
+    const contributed = contributedPhotos.find(item => item.id === photo.collectionPhotoId);
+    if (contributed) {
+      wx.navigateTo({ url: `/contributions/gallery/index?group=${contributed.group}&photo=${contributed.id}` });
+      return;
+    }
+    const previewItems = this.data.photos.filter(item => item.available !== false && !item.collectionPhotoId);
     const previewIndex = previewItems.findIndex(item => item.id === photo.id);
     this.setData({
       showPreview: true,
@@ -103,7 +111,7 @@ Page({
   onPreviewImage(e) {
     const src = e.currentTarget.dataset.src;
     const urls = this.data.photos
-      .filter(photo => photo.available !== false)
+      .filter(photo => photo.available !== false && !photo.collectionPhotoId)
       .map(photo => photo.src);
     wx.previewImage({ current: src, urls });
   },

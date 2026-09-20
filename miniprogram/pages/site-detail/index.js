@@ -1,6 +1,7 @@
 // pages/site-detail/index.js
 const { redLandmarks, redVillages, redStories } = require('../../utils/data.js');
 const { hasCoordinates, arrivalFor, navigateWithArrival } = require('../../utils/navigation.js');
+const { photoCollections } = require('../../utils/photoCollections.js');
 
 function safeDecode(value) {
   if (!value) return '';
@@ -16,6 +17,7 @@ Page({
     site: null,
     source: '', // 'landmark' or 'village_site'
     relatedStories: [],
+    photoCollection: null,
     canNavigate: false
   },
 
@@ -70,7 +72,8 @@ Page({
     );
 
     const canNavigate = hasCoordinates(site);
-    this.setData({ site, source, relatedStories, canNavigate });
+    const photoCollection = photoCollections.find(group => group.siteId && group.siteId === site.id) || null;
+    this.setData({ site, source, relatedStories, canNavigate, photoCollection });
   },
 
   // 跳转到红色故事详情
@@ -92,7 +95,7 @@ Page({
   // 跳转实景相册
   onGoToGallery() {
     wx.navigateTo({
-      url: '/assets/gallery/index?category=revolutionary'
+      url: this.data.photoCollection ? `/contributions/gallery/index?group=${this.data.photoCollection.id}` : '/assets/gallery/index?category=revolutionary'
     });
   },
 

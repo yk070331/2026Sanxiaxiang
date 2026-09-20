@@ -2,7 +2,8 @@
 <view class="container">
   <!-- 头图区域 -->
   <view class="site-hero">
-    <view class="hero-overlay"></view>
+    <image wx:if="{{photoCollection}}" class="hero-image" src="{{photoCollection.coverSrc}}" mode="aspectFill" />
+    <view class="hero-overlay {{photoCollection ? 'has-photo' : ''}}"></view>
     <view class="hero-text">
       <view class="hero-badge">
         <text wx:if="{{source === 'landmark'}}">★ 市级核心红色地标</text>
@@ -10,6 +11,7 @@
       </view>
       <text class="hero-title">{{site.name}}</text>
       <text class="hero-subtitle" wx:if="{{site.summary}}">{{site.summary}}</text>
+      <text wx:if="{{photoCollection}}" class="hero-photo-link" bindtap="onGoToGallery">用户提供 · 查看{{photoCollection.count}}张地点照片 →</text>
     </view>
   </view>
 
@@ -61,7 +63,7 @@
         <view class="gallery-grid">
           <view class="gallery-placeholder">
             <text class="placeholder-icon">📷</text>
-            <text class="placeholder-text">点击查看革命旧址实拍影像</text>
+            <text class="placeholder-text">{{photoCollection ? photoCollection.title + ' · ' + photoCollection.count + '张照片' : '点击查看革命旧址实拍影像'}}</text>
           </view>
         </view>
         <view class="gallery-more">

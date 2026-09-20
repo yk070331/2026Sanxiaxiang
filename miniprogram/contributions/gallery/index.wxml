@@ -1,0 +1,27 @@
+<view class="photo-page">
+  <view class="intro">
+    <text class="heading">补充影像 · {{totalCount}}张</text>
+    <text class="intro-note">纪念碑、旧址、竹林与乡村景色。点击图片看完整大图。</text>
+    <navigator class="back-gallery" url="/assets/gallery/index">查看全部实景相册 →</navigator>
+  </view>
+  <scroll-view scroll-x class="group-bar">
+    <button wx:for="{{groups}}" wx:key="id" class="group-chip {{currentGroup === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="onGroupChange">{{item.title}} {{item.count}}</button>
+  </scroll-view>
+  <view class="photo-card" wx:for="{{photos}}" wx:key="id">
+    <image class="photo" src="{{item.src}}" mode="widthFix" lazy-load data-id="{{item.id}}" bindtap="onPreview" />
+    <view class="photo-copy">
+      <text class="photo-title">{{item.title}}</text>
+      <text class="location">{{item.locationLabel}}</text>
+      <text class="description">{{item.desc}}</text>
+      <text class="source">{{item.sourceLabel}} · {{item.capturedAt}}</text>
+    </view>
+  </view>
+  <view class="safe-area-bottom"></view>
+  <view wx:if="{{showPreview}}" class="preview">
+    <view class="preview-toolbar"><text>{{previewIndex + 1}} / {{photos.length}}</text><button bindtap="onClosePreview">关闭 ✕</button></view>
+    <swiper class="preview-swiper" current="{{previewIndex}}" bindchange="onPreviewChange">
+      <swiper-item wx:for="{{photos}}" wx:key="id"><image class="preview-image" src="{{item.src}}" mode="aspectFit" /></swiper-item>
+    </swiper>
+    <view class="preview-caption"><text>{{photos[previewIndex].title}}</text><text>{{photos[previewIndex].locationLabel}} · 用户提供</text></view>
+  </view>
+</view>

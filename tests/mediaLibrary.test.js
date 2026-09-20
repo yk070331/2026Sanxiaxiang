@@ -32,7 +32,7 @@ global.wx = { setClipboardData: data => copied.push(data.data), showToast() {} }
 require('../miniprogram/assets/gallery/index');
 const gallery = { ...definition, data: { ...definition.data, allPhotos: photoGallery }, setData(value) { Object.assign(this.data, value); } };
 gallery.filterPhotos('all');
-assert.strictEqual(gallery.data.photos.length, 21, 'default gallery hides missing photographs');
+assert.strictEqual(gallery.data.photos.length, 34, 'default gallery hides missing photographs');
 gallery.filterPhotos('licensed');
 assert.strictEqual(gallery.data.photos.length, 5);
 gallery.onPhotoTap({ currentTarget: { dataset: { index: 0 } } });
@@ -42,7 +42,7 @@ assert.strictEqual(copied[0], gallery.data.previewItems[0].sourceUrl);
 gallery.onCopyCredit({ currentTarget: { dataset: { field: 'src' } } });
 assert.strictEqual(copied.length, 1, 'credit copying accepts only documented URL fields');
 gallery.onTogglePending();
-assert.strictEqual(gallery.data.photos.length, 33);
+assert.strictEqual(gallery.data.photos.length, 41);
 gallery.filterPhotos('nature');
 assert(gallery.data.photos.every(p => p.category === 'nature'));
 console.log('mediaLibrary.test.js: licensed-image provenance, synthetic narration, asset checksums, gallery filters and credits passed');
