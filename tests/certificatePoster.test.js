@@ -17,6 +17,6 @@ assert(js.includes('wx.canvasToTempFilePath'), 'certificate export missing');
 assert(js.includes('wx.saveImageToPhotosAlbum'), 'certificate album save missing');
 assert(wxml.includes('canvas-id="certificateCanvas"'), 'certificate canvas missing');
 assert(wxml.includes('certificate-preview'), 'certificate preview missing');
-assert(app.permission && app.permission['scope.writePhotosAlbum'], 'album permission purpose missing');
+assert(!app.permission || !app.permission['scope.writePhotosAlbum'], 'album permission must not be declared in unsupported app.json permission field');
 
 console.log('certificatePoster.test.js: generate, preview and save flow passed');

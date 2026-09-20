@@ -4,7 +4,7 @@ const path = require('path');
 const appPath = path.resolve(__dirname, '../miniprogram/app.js');
 const envPath = path.resolve(__dirname, '../miniprogram/config/env.js');
 
-function loadApp({ envId = '', cloudInitError = null } = {}) {
+function loadApp({ envId = '', cloudInitError = null, modernApis = true, platform = 'android' } = {}) {
   let appDefinition;
   let cloudInitCalls = 0;
   global.App = definition => {
@@ -25,8 +25,10 @@ function loadApp({ envId = '', cloudInitError = null } = {}) {
       }
     },
     getSystemInfoSync() {
-      return { statusBarHeight: 24, platform: 'android' };
+      throw new Error('Deprecated API must not be called');
     },
+    getWindowInfo: modernApis ? () => ({ statusBarHeight: 24, windowWidth: 390 }) : undefined,
+    getDeviceInfo: modernApis ? () => ({ platform }) : undefined,
     getNetworkType({ success }) {
       success({ networkType: 'wifi' });
     },
@@ -43,6 +45,15 @@ let result = loadApp();
 assert.equal(result.cloudInitCalls, 0);
 assert.equal(result.appDefinition.globalData.cloudReady, false);
 assert.equal(result.appDefinition.globalData.env, '');
+assert.equal(result.appDefinition.globalData.statusBarHeight, 24);
+assert.equal(result.appDefinition.globalData.navBarHeight, 48);
+assert.equal(result.appDefinition.globalData.systemInfo.windowWidth, 390);
+
+result = loadApp({ platform: 'ios' });
+assert.equal(result.appDefinition.globalData.navBarHeight, 44);
+result = loadApp({ modernApis: false });
+assert.equal(result.appDefinition.globalData.statusBarHeight, 20);
+assert.equal(result.appDefinition.globalData.isOnline, true, 'missing optional APIs must not interrupt launch');
 
 result = loadApp({ envId: ' cloud1-qiaolin ' });
 assert.equal(result.cloudInitCalls, 1);

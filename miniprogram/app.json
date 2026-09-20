@@ -29,9 +29,6 @@
   "permission": {
     "scope.userLocation": {
       "desc": "您的位置信息将用于地图导航展示"
-    },
-    "scope.writePhotosAlbum": {
-      "desc": "用于将您主动生成的红色研学证书保存到相册"
     }
   },
   "requiredPrivateInfos": [

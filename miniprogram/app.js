@@ -31,11 +31,12 @@ App({
       }
     }
 
-    // 获取系统信息
-    const systemInfo = wx.getSystemInfoSync();
-    this.globalData.systemInfo = systemInfo;
-    this.globalData.statusBarHeight = systemInfo.statusBarHeight;
-    this.globalData.navBarHeight = systemInfo.platform === 'android' ? 48 : 44;
+    // 按需读取窗口和设备信息，避免调用已弃用的聚合接口。
+    const windowInfo = typeof wx.getWindowInfo === 'function' ? wx.getWindowInfo() : {};
+    const deviceInfo = typeof wx.getDeviceInfo === 'function' ? wx.getDeviceInfo() : {};
+    this.globalData.systemInfo = { ...deviceInfo, ...windowInfo };
+    this.globalData.statusBarHeight = Number.isFinite(windowInfo.statusBarHeight) ? windowInfo.statusBarHeight : 20;
+    this.globalData.navBarHeight = deviceInfo.platform === 'android' ? 48 : 44;
 
     // 网络状态用于提示地图和远程素材可能不可用。
     wx.getNetworkType({
