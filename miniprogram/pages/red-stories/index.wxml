@@ -1,5 +1,9 @@
 <!--pages/red-stories/index.wxml - 红色故事页-->
-<view class="container">
+<view class="container {{careMode ? 'care-mode' : ''}}">
+  <view class="reading-toolbar">
+    <text class="reading-heading">红色故事</text>
+    <button class="care-toggle" bindtap="onToggleCare">{{careMode ? '标准模式' : '关怀模式'}}</button>
+  </view>
   <scroll-view class="category-bar" scroll-x="true" enable-flex>
     <view
       class="category-item {{currentCategory === item.id ? 'active' : ''}}"
@@ -35,7 +39,7 @@
         </view>
         <view class="story-card-body">
           <text class="story-card-title">{{story.title}}</text>
-          <text class="story-card-excerpt">{{story.text.substring(0, 80)}}...</text>
+          <text class="story-card-excerpt">{{story.excerpt}}</text>
           <view class="story-card-meta">
             <text class="verification-badge {{story.verificationClass}}">{{story.verificationStatus}}</text>
             <text class="meta-author">🗣️ {{story.author}}</text>
@@ -69,13 +73,13 @@
 
       <view class="audio-player" wx:if="{{currentStory.audio && currentStory.audioAvailable}}">
         <view class="audio-header">
-          <text class="audio-label">🎙️ 村民口述原声音频</text>
-          <text class="audio-source">口述人：{{currentStory.author}}</text>
+          <text class="audio-label">🎙️ 故事音频</text>
+          <text class="audio-source">{{currentStory.audioSourceLabel || '录音来源见审核信息'}}</text>
         </view>
         <view class="audio-controls">
-          <view class="audio-btn-play" bindtap="onToggleAudio">
+          <button class="audio-btn-play" bindtap="onToggleAudio" aria-label="{{isPlaying ? '暂停讲解' : '播放讲解'}}">
             <text class="play-icon">{{isPlaying && playingStoryId === currentStory.id ? '⏸️' : '▶️'}}</text>
-          </view>
+          </button>
           <view class="audio-progress-area">
             <slider
               class="audio-slider"
@@ -89,17 +93,22 @@
               bindchange="onAudioSeek"
             />
             <view class="audio-time">
-              <text>{{isPlaying && playingStoryId === currentStory.id ? audioCurrentTime : '00:00'}}</text>
+              <text>{{audioCurrentTime}}</text>
               <text>/</text>
-              <text>{{currentStory.audioDuration || '00:00'}}</text>
+              <text>{{audioDuration}}</text>
             </view>
           </view>
         </view>
+        <view class="playback-rates" wx:if="{{rateSupported}}">
+          <text>播放速度</text>
+          <button wx:for="{{playbackRates}}" wx:key="*this" class="rate-button {{playbackRate === item ? 'selected' : ''}}" data-rate="{{item}}" bindtap="onPlaybackRateChange">{{item}}×</button>
+        </view>
+        <text class="reading-note" wx:else>当前设备使用原速播放</text>
       </view>
-      <view class="audio-player" wx:elif="{{currentStory.audio}}">
+      <view class="audio-player" wx:else>
         <view class="audio-header">
-          <text class="audio-label">🎙️ 口述音频待上传</text>
-          <text class="audio-source">上传并审核原始录音后即可启用</text>
+          <text class="audio-label">🎙️ 真实讲解录音待采集 / 上传</text>
+          <text class="audio-source">完成来源、授权和内容审核后启用；当前可阅读文字</text>
         </view>
       </view>
 
@@ -111,9 +120,14 @@
       <view class="detail-content">
         <view class="content-header">
           <view class="label-dot"></view>
-          <text class="content-title">故事正文</text>
+          <text class="content-title">文字讲解</text>
         </view>
-        <text class="content-body">{{currentStory.text}}</text>
+        <view class="reading-tabs">
+          <button class="reading-tab {{readingMode === 'brief' ? 'selected' : ''}}" data-mode="brief" bindtap="onReadingModeChange">简明版</button>
+          <button class="reading-tab {{readingMode === 'full' ? 'selected' : ''}}" data-mode="full" bindtap="onReadingModeChange">完整版</button>
+        </view>
+        <text class="reading-note" wx:if="{{readingMode === 'brief'}}">原文节选，保留同一史料审核状态；完整内容请切换完整版。</text>
+        <text class="content-body">{{readingMode === 'brief' ? currentStory.briefText : currentStory.text}}</text>
       </view>
 
       <view class="detail-source">

@@ -4,6 +4,8 @@
 function distanceKm(fromLatitude, fromLongitude, toLatitude, toLongitude) {
   const values = [fromLatitude, fromLongitude, toLatitude, toLongitude];
   if (!values.every(Number.isFinite)) return null;
+  if (Math.abs(fromLatitude) > 90 || Math.abs(toLatitude) > 90
+    || Math.abs(fromLongitude) > 180 || Math.abs(toLongitude) > 180) return null;
 
   const toRadians = degree => degree * Math.PI / 180;
   const earthRadiusKm = 6371;
@@ -16,24 +18,25 @@ function distanceKm(fromLatitude, fromLongitude, toLatitude, toLongitude) {
       * Math.cos(toLatitudeRadians)
       * Math.sin(longitudeDelta / 2) ** 2;
 
-  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const clamped = Math.max(0, Math.min(1, a));
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(clamped), Math.sqrt(1 - clamped));
 }
 
 function formatDistance(distance) {
-  if (!Number.isFinite(distance)) return '待定位';
-  if (distance < 1) return `${Math.max(1, Math.round(distance * 1000))}米`;
+  if (!Number.isFinite(distance) || distance < 0) return '待定位';
+  if (distance < 1) return `${Math.round(distance * 1000)}米`;
   return `${distance.toFixed(distance < 10 ? 1 : 0)}公里`;
 }
 
 function estimateMinutes(distance, speedKmPerHour) {
-  if (!Number.isFinite(distance) || !Number.isFinite(speedKmPerHour) || speedKmPerHour <= 0) {
+  if (!Number.isFinite(distance) || distance < 0 || !Number.isFinite(speedKmPerHour) || speedKmPerHour <= 0) {
     return null;
   }
-  return Math.max(1, Math.ceil(distance / speedKmPerHour * 60));
+  return Math.ceil(distance / speedKmPerHour * 60);
 }
 
 function formatMinutes(minutes) {
-  if (!Number.isFinite(minutes)) return '待定位';
+  if (!Number.isFinite(minutes) || minutes < 0) return '待定位';
   if (minutes < 60) return `约${minutes}分钟`;
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;

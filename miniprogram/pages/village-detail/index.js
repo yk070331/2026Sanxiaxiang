@@ -136,7 +136,7 @@ Page({
   onLocateMe() {
     const village = this.data.village;
     if (!village || this.data.locating) return;
-    this.setData({ locating: true, locationMessage: '正在获取当前位置…' });
+    this.setData({ locating: true, distanceText: '待定位', walkTimeText: '待定位', driveTimeText: '待定位', locationMessage: '正在获取当前位置…' });
     wx.getLocation({
       type: 'gcj02',
       success: location => {
@@ -151,15 +151,19 @@ Page({
           distanceText: formatDistance(distance),
           walkTimeText: formatMinutes(estimateMinutes(distance, 4.5)),
           driveTimeText: formatMinutes(estimateMinutes(distance, 30)),
-          locationMessage: '为直线距离与本地估算；实时路况请进入地图导航'
+          locationMessage: distance === null
+            ? '未取得有效坐标，请重试定位'
+            : '为直线距离与本地估算（步行4.5公里/小时、驾车30公里/小时）；非实际路线耗时'
         });
       },
-      fail: () => {
+      fail: error => {
+        const denied = /auth deny|auth denied|authorize|permission/i.test(error && error.errMsg || '');
         this.setData({
           locating: false,
-          locationMessage: '未获得位置权限，请在小程序设置中允许定位'
+          distanceText: '待定位', walkTimeText: '待定位', driveTimeText: '待定位',
+          locationMessage: denied ? '未获得位置权限，请在小程序设置中允许定位' : '定位暂不可用，请检查系统定位和网络后重试'
         });
-        wx.showToast({ title: '请允许位置权限后重试', icon: 'none' });
+        wx.showToast({ title: denied ? '请允许位置权限后重试' : '定位失败，请稍后重试', icon: 'none' });
       }
     });
   },

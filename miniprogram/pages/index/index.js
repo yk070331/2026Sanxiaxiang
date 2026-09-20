@@ -36,7 +36,18 @@ Page({
     popupData: null,
     popupType: '', // 'landmark' | 'village' | 'place'
     // 图例显示
-    showLegend: true,
+    showLegend: false,
+    careMode: false,
+    quickEntries: [
+      { title: '红色故事', icon: '📖', url: '/pages/red-stories/index' },
+      { title: '路线推荐', icon: '🚩', url: '/pages/route-recommend/index' },
+      { title: '研学打卡', icon: '📍', url: '/pages/study-tour/index' },
+      { title: '知识闯关', icon: '🧠', url: '/pages/knowledge-quiz/index' },
+      { title: '我的下一站', icon: '🧭', url: '/pages/study-tour/index?action=next' },
+      { title: '研学证书', icon: '🎓', url: '/pages/study-tour/index?action=certificate' },
+      { title: '实景相册', icon: '📷', url: '/assets/gallery/index' },
+      { title: '村庄详情', icon: '🏡', url: '/pages/village-detail/index?id=village_1' }
+    ],
     // 全屏状态
     isFullscreen: true,
     // 状态栏高度（从全局获取）
@@ -52,16 +63,24 @@ Page({
     this.networkListener = result => this.setData({ isOnline: result.isConnected });
     wx.onNetworkStatusChange(this.networkListener);
     this.buildMarkers();
-    // 5 秒后自动收起图例
-    this.legendTimer = setTimeout(() => {
-      this.setData({ showLegend: false });
-    }, 5000);
   },
 
   onReady() {
     // 创建地图上下文
     this.mapCtx = wx.createMapContext('hongyunMap', this);
     this.fitAllPoints();
+  },
+
+  onShow() {
+    this.setData({ careMode: Boolean(getApp().globalData.careMode) });
+  },
+
+  onToggleCare() {
+    const careMode = !this.data.careMode;
+    getApp().globalData.careMode = careMode;
+    this.setData({ careMode });
+    try { wx.setStorageSync('qiaolinCareMode', careMode); }
+    catch (error) { wx.showToast({ title: '已切换，本机设置暂未保存', icon: 'none' }); }
   },
 
   /**
@@ -367,7 +386,7 @@ Page({
     if (!points.length) return;
     this.mapCtx.includePoints({
       points,
-      padding: [120, 40, 180, 40]
+      padding: [180, 40, 80, 40]
     });
   },
 

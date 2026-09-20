@@ -1,5 +1,5 @@
 <!--pages/index/index.wxml - 红韵乔林地图主页-->
-<view class="page-container">
+<view class="page-container {{careMode ? 'care-mode' : ''}}">
   <map
     id="hongyunMap"
     class="full-map"
@@ -25,11 +25,6 @@
         <text class="nav-title">红韵乔林</text>
         <text class="nav-subtitle">井冈山·红色文旅地图</text>
       </view>
-      <navigator
-        url="/pages/privacy/index"
-        hover-class="none"
-        style="padding: 10rpx 18rpx; border: 1rpx solid rgba(255,255,255,.55); border-radius: 24rpx; color: #fff; font-size: 21rpx; background: rgba(80,0,0,.28);"
-      >可信与隐私</navigator>
     </view>
   </view>
 
@@ -73,6 +68,24 @@
     <view class="legend-item"><view class="legend-icon legend-star">★</view><text class="legend-text">市级核心红色地标</text></view>
     <view class="legend-item"><view class="legend-icon legend-village">🏘️</view><text class="legend-text">红色村落</text></view>
     <view class="legend-item"><view class="legend-icon">💧</view><text class="legend-text">水库与自然点位</text></view>
+  </view>
+
+  <view class="feature-panel">
+    <view class="feature-heading">
+      <text class="feature-title">探索乔林 · 从这里开始</text>
+      <text class="feature-hint">故事 / 路线 / 研学</text>
+    </view>
+    <view class="feature-grid">
+      <navigator wx:for="{{quickEntries}}" wx:key="title" class="feature-entry" url="{{item.url}}" hover-class="feature-pressed">
+        <text class="feature-icon">{{item.icon}}</text>
+        <text class="feature-label">{{item.title}}</text>
+      </navigator>
+    </view>
+    <view class="feature-tools">
+      <button class="feature-tool {{careMode ? 'tool-active' : ''}}" bindtap="onToggleCare">{{careMode ? '恢复标准字号' : '关怀模式 · 大字'}}</button>
+      <navigator class="feature-tool" url="/pages/correction/index?targetType=village&amp;targetId=village_1&amp;targetName=乔林村">游客纠错</navigator>
+      <navigator class="feature-tool" url="/pages/privacy/index">可信与隐私</navigator>
+    </view>
   </view>
 
   <view class="popup-mask {{showPopup ? 'mask-show' : ''}}" bindtap="onClosePopup"></view>
@@ -133,7 +146,7 @@
               <text class="tour-card-icon">🚩</text>
               <view class="tour-card-info"><text class="tour-card-title">研学路线规划参考</text><text class="tour-card-desc">串联6处红色旧址 · 距离待现场实测</text></view>
             </view>
-            <button class="btn-gold tour-nav-btn" bindtap="onGoToStudyTour">一键导航</button>
+            <button class="btn-gold tour-nav-btn" bindtap="onGoToStudyTour">研学打卡</button>
           </view>
         </view>
       </view>

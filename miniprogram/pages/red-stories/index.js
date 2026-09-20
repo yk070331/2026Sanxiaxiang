@@ -38,6 +38,8 @@ const verificationProfiles = {
 function buildDisplayStories(stories) {
   return stories.map(story => ({
     ...story,
+    excerpt: story.text.slice(0, 80) + (story.text.length > 80 ? '…' : ''),
+    briefText: story.text.length > 240 ? story.text.slice(0, 240) + '…' : story.text,
     ...(verificationProfiles[story.id] || {
       verificationStatus: '待审核',
       verificationClass: 'pending',
@@ -47,6 +49,11 @@ function buildDisplayStories(stories) {
 }
 
 const displayStories = buildDisplayStories(redStories);
+const playbackRates = [0.75, 1, 1.25, 1.5];
+
+function currentApp() {
+  return typeof getApp === 'function' ? getApp() : null;
+}
 
 Page({
   data: {
@@ -63,15 +70,40 @@ Page({
     playingStoryId: '',
     audioCurrentTime: '00:00',
     audioDuration: '00:00',
-    audioProgress: 0
+    audioProgress: 0,
+    careMode: false,
+    readingMode: 'brief',
+    playbackRate: 1,
+    playbackRates,
+    rateSupported: true
   },
 
-  onLoad(options) {
+  onLoad(options = {}) {
     this.setData({ stories: displayStories });
+    this.onShow();
     if (options.storyId) {
       const story = displayStories.find(item => item.id === options.storyId);
       if (story) this.openStory(story);
     }
+  },
+
+  onShow() {
+    const app = currentApp();
+    this.setData({ careMode: Boolean(app && app.globalData && app.globalData.careMode) });
+  },
+
+  onToggleCare() {
+    const careMode = !this.data.careMode;
+    const app = currentApp();
+    if (app && app.globalData) app.globalData.careMode = careMode;
+    this.setData({ careMode });
+    try { wx.setStorageSync('qiaolinCareMode', careMode); }
+    catch (error) { wx.showToast({ title: '已切换，本机设置暂未保存', icon: 'none' }); }
+  },
+
+  onReadingModeChange(e) {
+    const mode = e.currentTarget.dataset.mode;
+    if (mode === 'brief' || mode === 'full') this.setData({ readingMode: mode });
   },
 
   onCategoryChange(e) {
@@ -79,13 +111,16 @@ Page({
   },
 
   openStory(story) {
+    this.disposeAudio();
     this.setData({
       currentStory: story,
       storyId: story.id,
       isPlaying: false,
       playingStoryId: '',
       audioCurrentTime: '00:00',
-      audioProgress: 0
+      audioDuration: '00:00',
+      audioProgress: 0,
+      readingMode: 'brief'
     });
   },
 
@@ -95,7 +130,7 @@ Page({
   },
 
   onCloseStory() {
-    this.stopAudio();
+    this.disposeAudio();
     this.setData({ currentStory: null, storyId: '' });
   },
 
@@ -114,63 +149,111 @@ Page({
     }
 
     if (!this.innerAudioCtx) {
-      this.innerAudioCtx = wx.createInnerAudioContext();
-      this.innerAudioCtx.onPlay(() => {
+      const context = wx.createInnerAudioContext();
+      this.innerAudioCtx = context;
+      // 旧实例的延迟回调不得修改新故事的播放状态。
+      const active = () => this.innerAudioCtx === context
+        && this.data.currentStory && this.data.currentStory.id === story.id;
+      context.onPlay(() => {
+        if (!active()) return;
         this.setData({ isPlaying: true, playingStoryId: story.id });
       });
-      this.innerAudioCtx.onPause(() => this.setData({ isPlaying: false }));
-      this.innerAudioCtx.onStop(() => this.setData({ isPlaying: false }));
-      this.innerAudioCtx.onEnded(() => {
+      context.onPause(() => { if (active()) this.setData({ isPlaying: false }); });
+      context.onStop(() => { if (active()) this.setData({ isPlaying: false }); });
+      context.onEnded(() => {
+        if (!active()) return;
         this.setData({ isPlaying: false, audioProgress: 0, audioCurrentTime: '00:00' });
       });
-      this.innerAudioCtx.onTimeUpdate(() => {
-        const current = this.innerAudioCtx.currentTime;
-        const duration = this.innerAudioCtx.duration || 1;
+      const updateProgress = () => {
+        if (!active()) return;
+        const current = Number.isFinite(context.currentTime) ? Math.max(0, context.currentTime) : 0;
+        const duration = Number.isFinite(context.duration) && context.duration > 0 ? context.duration : 0;
         this.setData({
           audioCurrentTime: this.formatTime(current),
-          audioProgress: Math.round((current / duration) * 100)
+          audioDuration: this.formatTime(duration),
+          audioProgress: duration ? Math.min(100, Math.round(current / duration * 100)) : 0
         });
-      });
-      this.innerAudioCtx.onError(error => {
+      };
+      context.onTimeUpdate(updateProgress);
+      context.onCanplay(updateProgress);
+      context.onError(error => {
+        if (!active()) return;
         console.error('音频播放失败:', error);
-        wx.showToast({ title: '音频播放失败', icon: 'none' });
-        this.setData({ isPlaying: false });
+        this.disposeAudio();
+        wx.showToast({ title: '音频加载失败，请重试或阅读文字', icon: 'none' });
       });
+      context.src = story.audio;
     }
 
-    this.innerAudioCtx.src = story.audio;
-    if (story.audioDuration) this.setData({ audioDuration: story.audioDuration });
+    // 暂停续播时不重新赋 src，保留原播放位置。
+    this.applyPlaybackRate(this.data.playbackRate);
     this.innerAudioCtx.play();
+  },
+
+  onPlaybackRateChange(e) {
+    const rate = Number(e.currentTarget.dataset.rate);
+    if (!playbackRates.includes(rate)) return;
+    this.applyPlaybackRate(rate);
+  },
+
+  applyPlaybackRate(rate) {
+    const context = this.innerAudioCtx;
+    if (context) {
+      try {
+        if (!('playbackRate' in context)) throw new Error('unsupported');
+        context.playbackRate = rate;
+        if (context.playbackRate !== rate) throw new Error('unsupported');
+      } catch (error) {
+        try { context.playbackRate = 1; } catch (ignored) { /* 原速降级 */ }
+        this.setData({ playbackRate: 1, rateSupported: false });
+        if (rate !== 1) wx.showToast({ title: '当前设备暂不支持倍速，使用原速', icon: 'none' });
+        return;
+      }
+    }
+    this.setData({ playbackRate: rate, rateSupported: true });
   },
 
   pauseAudio() {
     if (this.innerAudioCtx) this.innerAudioCtx.pause();
+    this.setData({ isPlaying: false });
   },
 
   stopAudio() {
     if (this.innerAudioCtx) this.innerAudioCtx.stop();
+    this.setData({ isPlaying: false, playingStoryId: '', audioCurrentTime: '00:00', audioProgress: 0 });
+  },
+
+  disposeAudio() {
+    const context = this.innerAudioCtx;
+    this.innerAudioCtx = null;
+    if (context) {
+      context.stop();
+      context.destroy();
+    }
+    this.setData({ isPlaying: false, playingStoryId: '', audioCurrentTime: '00:00', audioDuration: '00:00', audioProgress: 0 });
   },
 
   onAudioSeek(e) {
     if (!this.innerAudioCtx) return;
-    const duration = this.innerAudioCtx.duration || 1;
-    this.innerAudioCtx.seek((e.detail.value / 100) * duration);
+    const duration = this.innerAudioCtx.duration;
+    const value = Number(e.detail.value);
+    if (!Number.isFinite(duration) || duration <= 0 || !Number.isFinite(value)) return;
+    const percent = Math.max(0, Math.min(100, value));
+    const seconds = percent / 100 * duration;
+    this.innerAudioCtx.seek(seconds);
+    this.setData({ audioProgress: percent, audioCurrentTime: this.formatTime(seconds) });
   },
 
   formatTime(seconds) {
-    if (!seconds || isNaN(seconds)) return '00:00';
+    if (!Number.isFinite(seconds) || seconds <= 0) return '00:00';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
   },
 
-  onUnload() {
-    this.stopAudio();
-    if (this.innerAudioCtx) {
-      this.innerAudioCtx.destroy();
-      this.innerAudioCtx = null;
-    }
-  },
+  onHide() { this.pauseAudio(); },
+
+  onUnload() { this.disposeAudio(); },
 
   onShareAppMessage() {
     return {

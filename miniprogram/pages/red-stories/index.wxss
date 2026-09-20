@@ -157,3 +157,31 @@
 .empty-state { display: flex; flex-direction: column; align-items: center; padding: 120rpx 0; }
 .empty-icon { font-size: 80rpx; opacity: 0.4; margin-bottom: 20rpx; }
 .empty-text { font-size: 28rpx; color: #777; }
+
+.reading-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 20rpx 28rpx; gap: 16rpx; }
+.reading-heading { font-size: 32rpx; font-weight: 600; }
+.care-toggle { margin: 0; font-size: 26rpx; color: #8B0000; background: #FFF; }
+.reading-tabs, .playback-rates { display: flex; flex-wrap: wrap; align-items: center; gap: 12rpx; margin: 16rpx 0; }
+.reading-tab, .rate-button { margin: 0; padding: 0 20rpx; font-size: 26rpx; background: #FFF; color: #7A2525; }
+.reading-tab.selected, .rate-button.selected { background: #A30B14; color: #FFF; }
+.playback-rates > text, .reading-note { font-size: 24rpx; color: #66564D; }
+.reading-note { display: block; line-height: 1.7; margin: 12rpx 0; }
+.audio-btn-play { padding: 0; margin: 0; }
+.audio-btn-play::after { border: none; }
+.audio-progress-area { min-width: 0; }
+.audio-header, .detail-meta { flex-wrap: wrap; }
+.audio-source { text-align: left; }
+.care-mode .content-body { font-size: 36rpx; line-height: 2; }
+.care-mode .story-card-title, .care-mode .detail-title { font-size: 40rpx; }
+.care-mode .story-card-excerpt { display: block; font-size: 32rpx; -webkit-line-clamp: unset; }
+.care-mode .meta-author, .care-mode .meta-date, .care-mode .meta-audio,
+.care-mode .meta-text, .care-mode .meta-tag, .care-mode .source-text,
+.care-mode .source-label, .care-mode .verification-note, .care-mode .verification-badge,
+.care-mode .audio-source, .care-mode .audio-time, .care-mode .reading-note,
+.care-mode .playback-rates > text { font-size: 30rpx; line-height: 1.8; }
+.care-mode .verification-title, .care-mode .content-title, .care-mode .audio-label { font-size: 34rpx; }
+.care-mode .care-toggle, .care-mode .category-item, .care-mode .reading-tab,
+.care-mode .rate-button, .care-mode .btn-outline { font-size: 32rpx; min-height: 88rpx; }
+.care-mode .category-item { box-sizing: border-box; padding: 20rpx 28rpx; }
+.care-mode .audio-btn-play { width: 96rpx; height: 96rpx; }
+.care-mode .play-icon { font-size: 42rpx; }

@@ -25,7 +25,8 @@ assert.deepStrictEqual(summary, {
   careMode: true,
   storedItemCount: 5
 });
-assert.strictEqual(privacyModule.USER_STORAGE_KEYS.length, 5);
+assert.strictEqual(privacyModule.USER_STORAGE_KEYS.length, 6);
+assert(privacyModule.USER_STORAGE_KEYS.includes('qiaolinActiveRoutePreset'), 'clearing learning records must also clear the remembered route');
 assert.ok(pageDefinition.onClearLocalData, 'privacy page must expose local deletion');
 assert.ok(pageDefinition.onOpenSettings, 'privacy page must expose permission settings');
 

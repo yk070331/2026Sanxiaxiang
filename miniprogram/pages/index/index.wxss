@@ -10,7 +10,7 @@
 /* ========== 全屏地图 ========== */
 .full-map {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 360rpx - env(safe-area-inset-bottom));
   position: absolute;
   top: 0;
   left: 0;
@@ -124,11 +124,11 @@
 .control-buttons {
   position: absolute;
   right: 24rpx;
-  bottom: 280rpx;
+  bottom: calc(380rpx + env(safe-area-inset-bottom));
   z-index: 10;
   display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+  flex-direction: row;
+  gap: 12rpx;
 }
 
 .ctrl-btn {
@@ -150,8 +150,8 @@
 
 .ctrl-btn-qiaolin {
   background: linear-gradient(135deg, #CC0000, #E83030);
-  width: 108rpx;
-  height: 108rpx;
+  width: 96rpx;
+  height: 96rpx;
   box-shadow: 0 6rpx 20rpx rgba(204, 0, 0, 0.4);
 }
 
@@ -176,7 +176,7 @@
 .legend-panel {
   position: absolute;
   left: 24rpx;
-  bottom: 300rpx;
+  bottom: calc(490rpx + env(safe-area-inset-bottom));
   z-index: 10;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20rpx;
@@ -517,3 +517,62 @@
 .btn-full {
   width: 100%;
 }
+
+/* 常用功能在首页直接可见，地图仍可拖动与缩放。 */
+.feature-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
+  box-sizing: border-box;
+  padding: 20rpx 24rpx calc(12rpx + env(safe-area-inset-bottom));
+  background: #fffdf9;
+  border-radius: 28rpx 28rpx 0 0;
+  box-shadow: 0 -6rpx 30rpx rgba(80, 30, 0, .14);
+}
+.feature-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44rpx;
+  margin-bottom: 12rpx;
+}
+.feature-title { font-size: 27rpx; font-weight: 700; color: #8b0000; }
+.feature-hint { font-size: 20rpx; color: #806e65; }
+.feature-grid { display: flex; flex-wrap: wrap; }
+.feature-entry {
+  width: 25%;
+  min-height: 102rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14rpx;
+}
+.feature-icon { font-size: 36rpx; line-height: 1.2; }
+.feature-label { font-size: 24rpx; font-weight: 600; margin-top: 6rpx; color: #35251e; }
+.feature-pressed { background: #fff0e2; }
+.feature-tools { display: flex; margin-top: 12rpx; padding-top: 8rpx; border-top: 1rpx solid #eadfd6; }
+.feature-tool {
+  flex: 1;
+  margin: 0;
+  min-height: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23rpx;
+  color: #6a4431;
+  border-radius: 12rpx;
+}
+.tool-active { background: #ffead5; color: #8b0000; font-weight: 700; }
+.care-mode .feature-label { font-size: 30rpx; }
+.care-mode .feature-title { font-size: 30rpx; }
+.care-mode .feature-tool { font-size: 27rpx; }
+.care-mode .feature-hint { display: none; }
+.care-mode .search-input { font-size: 31rpx; }
+.care-mode .ctrl-btn-text { font-size: 23rpx; }
+.care-mode .control-buttons { bottom: calc(480rpx + env(safe-area-inset-bottom)); }
+.care-mode .legend-panel { bottom: calc(590rpx + env(safe-area-inset-bottom)); }
+.care-mode .full-map { height: calc(100% - 460rpx - env(safe-area-inset-bottom)); }

@@ -4,7 +4,8 @@ const USER_STORAGE_KEYS = [
   'qiaolinPendingCheckInSync',
   'qiaolinPendingCorrections',
   'qiaolinQuizHighScore',
-  'qiaolinCareMode'
+  'qiaolinCareMode',
+  'qiaolinActiveRoutePreset'
 ];
 
 function hasMeaningfulValue(value) {

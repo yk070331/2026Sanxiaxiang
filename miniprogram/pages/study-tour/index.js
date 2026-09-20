@@ -22,7 +22,14 @@ Page({
   },
 
   onLoad(options = {}) {
-    const preset = routePresets.find(route => route.id === options.preset);
+    // 首页的打卡、下一站和证书入口继续最近选择的路线。
+    const presetId = options.preset === undefined
+      ? wx.getStorageSync('qiaolinActiveRoutePreset')
+      : options.preset;
+    const preset = routePresets.find(route => route.id === presetId);
+    this.entryAction = options.action;
+    try { wx.setStorageSync('qiaolinActiveRoutePreset', preset ? preset.id : ''); }
+    catch (error) { wx.showToast({ title: '路线已打开，暂未保存选择', icon: 'none' }); }
     const reservoir = mapPlaces.find(place => place.id === 'place_qiaolin_reservoir');
     const segments = preset
       ? preset.segmentIds.map(segmentId => {
@@ -87,12 +94,19 @@ Page({
     this.setData({ careMode: Boolean(getApp().globalData.careMode) });
   },
 
+  onReady() {
+    const action = this.entryAction;
+    this.entryAction = '';
+    if (action === 'next') this.onNavigateToNext();
+    if (action === 'certificate') this.onShowCertificate();
+  },
+
   // 切换当前查看的站点段
   onSegmentTap(e) {
-    const order = Number(e.currentTarget.dataset.order);
-    const segment = this.data.tour.segments.find(item => item.order === order);
-    if (segment) {
-      this.setData({ currentSegment: order - 1 });
+    const id = e.currentTarget.dataset.id;
+    const index = this.data.tour.segments.findIndex(item => item.id === id);
+    if (index >= 0) {
+      this.setData({ currentSegment: index });
     }
   },
 
@@ -125,7 +139,11 @@ Page({
       nextSiteId: nextSite ? nextSite.id : '',
       nextSiteName: nextSite ? nextSite.name : '全部旧址已完成'
     });
-    wx.setStorageSync(CHECK_IN_STORAGE_KEY, checkedIn);
+    // 切换短路线后打卡仍保留其他路线已经完成的站点。
+    wx.setStorageSync(CHECK_IN_STORAGE_KEY, {
+      ...(wx.getStorageSync(CHECK_IN_STORAGE_KEY) || {}),
+      ...checkedIn
+    });
 
     // 云端不可用时自动加入补传队列，不影响现场弱网打卡。
     syncCheckIn({

@@ -128,7 +128,7 @@
         wx:for="{{tour.segments}}"
         wx:key="id"
         wx:for-item="seg"
-        data-order="{{seg.order}}"
+        data-id="{{seg.id}}"
         bindtap="onSegmentTap"
       >
         <text class="seg-nav-num">{{seg.type === 'start' ? '起' : (seg.type === 'end' ? '终' : seg.order - 1)}}</text>

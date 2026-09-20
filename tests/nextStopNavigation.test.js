@@ -46,6 +46,10 @@ const page = createPage({
 });
 
 assert.strictEqual(page.getNextUncheckedSite().id, 'seg_3', 'must select first unchecked site');
+page.onSegmentTap({ currentTarget: { dataset: { id: 'seg_3' } } });
+assert.strictEqual(page.data.currentSegment, 1, 'short routes must use actual index, not original route order');
+page.onSegmentTap({ currentTarget: { dataset: { id: 'missing' } } });
+assert.strictEqual(page.data.currentSegment, 1, 'unknown segment must leave current card unchanged');
 page.onNavigateToNext();
 assert.strictEqual(page.data.currentSegment, 1, 'must switch swiper to next site card');
 assert.strictEqual(openedLocations.length, 0, 'must not navigate to an unverified coordinate');
