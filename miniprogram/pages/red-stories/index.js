@@ -190,6 +190,18 @@ Page({
     this.innerAudioCtx.play();
   },
 
+  onListenStory(e) {
+    const story = this.data.stories.find(item => item.id === e.currentTarget.dataset.id);
+    if (!story) return;
+    this.openStory(story);
+    this.playAudio();
+  },
+
+  onCopyAudioSource() {
+    const story = this.data.currentStory;
+    if (story && story.audioReferenceUrl) wx.setClipboardData({ data: story.audioReferenceUrl });
+  },
+
   onPlaybackRateChange(e) {
     const rate = Number(e.currentTarget.dataset.rate);
     if (!playbackRates.includes(rate)) return;

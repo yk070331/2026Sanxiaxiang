@@ -23,6 +23,10 @@ const sourceFiles = [
 
 for (const file of sourceFiles.filter(item => item.endsWith('.js'))) {
   const source = fs.readFileSync(file, 'utf8');
+  if (file.startsWith(miniRoot + path.sep)) {
+    assert(!/require\s*\(\s*['"][^'"]+\.json['"]\s*\)/.test(source),
+      `mini-program runtime cannot import JSON modules: ${path.relative(root, file)}`);
+  }
   assert.doesNotThrow(
     () => new vm.Script(source, { filename: file }),
     `JavaScript syntax error: ${path.relative(root, file)}`

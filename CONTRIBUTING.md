@@ -44,7 +44,7 @@ git switch -c feature/another-task
 | 实景相册 | `miniprogram/assets/gallery/` |
 | 知识闯关 | `miniprogram/pages/knowledge-quiz/` |
 
-`miniprogram/utils/data.js`、`miniprogram/app.json`、`miniprogram/app.wxss`、云函数与公共工具需要协调修改。保持未核验史料提示、距离待实测说明及未核验坐标导航拦截；真实录音未采集时不可标为可播放。
+`miniprogram/utils/data.js`、`miniprogram/app.json`、`miniprogram/app.wxss`、云函数与公共工具需要协调修改。保持未核验史料提示、距离待实测说明及未核验坐标导航拦截；合成导览须明确标注，不得冒充真人录音。新增开放图片须保留作者、许可证、原作链接及地点说明。
 
 ## 提交前检查（PowerShell）
 

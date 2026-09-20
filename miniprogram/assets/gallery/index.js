@@ -5,6 +5,7 @@ Page({
   data: {
     categories: [
       { id: 'all', name: '全部' },
+      { id: 'licensed', name: '开放图片' },
       { id: 'revolutionary', name: '革命旧址' },
       { id: 'heritage', name: '文物史实' },
       { id: 'village', name: '古村落' },
@@ -15,6 +16,9 @@ Page({
     photos: [],
     dataSource: 'local',
     loading: true,
+    showPending: false,
+    availableCount: 0,
+    pendingCount: 0,
     // 大图浏览
     showPreview: false,
     previewIndex: 0,
@@ -28,6 +32,8 @@ Page({
     const result = await getPhotoGallery();
     this.setData({
       allPhotos: result.data,
+      availableCount: result.data.filter(photo => photo.available).length,
+      pendingCount: result.data.filter(photo => !photo.available).length,
       dataSource: result.source,
       loading: false
     });
@@ -43,10 +49,26 @@ Page({
 
   filterPhotos(category) {
     const allPhotos = this.data.allPhotos || [];
-    const photos = category === 'all'
+    const selected = category === 'all'
       ? allPhotos
-      : allPhotos.filter(photo => photo.category === category);
+      : allPhotos.filter(photo => category === 'licensed' ? photo.sourceKind === 'open-license' : photo.category === category);
+    const photos = selected.filter(photo => this.data.showPending || photo.available)
+      .sort((a, b) => Number(Boolean(b.available)) - Number(Boolean(a.available))
+        || Number(b.sourceKind === 'open-license') - Number(a.sourceKind === 'open-license'));
     this.setData({ photos });
+  },
+
+  onTogglePending() {
+    this.setData({ showPending: !this.data.showPending });
+    this.filterPhotos(this.data.currentCategory);
+  },
+
+  onCopyCredit(e) {
+    const photo = this.data.previewItems[this.data.previewIndex];
+    const field = e.currentTarget.dataset.field;
+    if (!photo || !['sourceUrl', 'licenseUrl'].includes(field)) return;
+    const value = photo[field];
+    if (typeof value === 'string' && value.startsWith('https://')) wx.setClipboardData({ data: value });
   },
 
   // 点击图片进入大图浏览

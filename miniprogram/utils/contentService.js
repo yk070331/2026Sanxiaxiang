@@ -18,7 +18,14 @@ function normalizeMedia(item) {
     src: item.src || item.fileId || '',
     desc: item.desc || item.description || '',
     date: item.date || item.capturedAtText || '时间待核验',
-    available: Boolean(item.src || item.fileId)
+    available: item.available !== false && Boolean(item.src || item.fileId),
+    sourceKind: item.sourceKind || '',
+    scopeLabel: item.scopeLabel || '',
+    creator: item.creator || '',
+    license: item.license || '',
+    licenseUrl: item.licenseUrl || '',
+    sourceUrl: item.sourceUrl || '',
+    changes: item.changes || ''
   };
 }
 

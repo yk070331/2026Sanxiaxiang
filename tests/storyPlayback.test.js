@@ -43,7 +43,7 @@ assert.strictEqual(page.data.careMode, true, 'care preference must follow other 
 const story = page.data.stories[0];
 assert(story.text.startsWith(story.briefText.replace(/…$/, '')), 'brief must be an original excerpt');
 assert(story.briefText.length <= 241);
-page.openStory(story);
+page.openStory({ ...story, audioAvailable: false });
 page.onReadingModeChange({ currentTarget: { dataset: { mode: 'full' } } });
 assert.strictEqual(page.data.readingMode, 'full');
 assert.strictEqual(page.data.currentStory.verificationStatus, story.verificationStatus);

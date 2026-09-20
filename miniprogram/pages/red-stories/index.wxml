@@ -4,6 +4,7 @@
     <text class="reading-heading">红色故事</text>
     <button class="care-toggle" bindtap="onToggleCare">{{careMode ? '标准模式' : '关怀模式'}}</button>
   </view>
+  <view class="audio-disclosure">语音集 · 温和普通话导览。全部为 AI 合成讲解，非村民、讲解员或历史人物原声。</view>
   <scroll-view class="category-bar" scroll-x="true" enable-flex>
     <view
       class="category-item {{currentCategory === item.id ? 'active' : ''}}"
@@ -44,8 +45,9 @@
             <text class="verification-badge {{story.verificationClass}}">{{story.verificationStatus}}</text>
             <text class="meta-author">🗣️ {{story.author}}</text>
             <text class="meta-date">📅 {{story.date}}</text>
-            <text class="meta-audio" wx:if="{{story.audioAvailable}}">🔊 {{story.audioDuration}}</text>
+            <text class="meta-audio" wx:if="{{story.audioAvailable}}">🔊 AI 合成 · {{story.audioDuration}}</text>
           </view>
+          <button wx:if="{{story.audioAvailable}}" class="listen-button" data-id="{{story.id}}" catchtap="onListenStory">▶ 听合成讲解</button>
         </view>
       </view>
     </view>
@@ -73,7 +75,7 @@
 
       <view class="audio-player" wx:if="{{currentStory.audio && currentStory.audioAvailable}}">
         <view class="audio-header">
-          <text class="audio-label">🎙️ 故事音频</text>
+          <text class="audio-label">🎙️ {{currentStory.audioKind === 'synthetic' ? 'AI 合成讲解' : '故事音频'}}</text>
           <text class="audio-source">{{currentStory.audioSourceLabel || '录音来源见审核信息'}}</text>
         </view>
         <view class="audio-controls">
@@ -104,6 +106,12 @@
           <button wx:for="{{playbackRates}}" wx:key="*this" class="rate-button {{playbackRate === item ? 'selected' : ''}}" data-rate="{{item}}" bindtap="onPlaybackRateChange">{{item}}×</button>
         </view>
         <text class="reading-note" wx:else>当前设备使用原速播放</text>
+        <view class="audio-script" wx:if="{{currentStory.audioScript}}">
+          <text class="audio-script-heading">本段讲解稿</text>
+          <text>{{currentStory.audioScript}}</text>
+          <text class="reading-note">依据：{{currentStory.audioReferenceTitle}}</text>
+          <button wx:if="{{currentStory.audioReferenceUrl}}" class="listen-button" bindtap="onCopyAudioSource">复制讲解资料来源</button>
+        </view>
       </view>
       <view class="audio-player" wx:else>
         <view class="audio-header">

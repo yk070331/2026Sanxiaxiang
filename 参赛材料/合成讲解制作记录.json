@@ -1,0 +1,74 @@
+[
+  {
+    "id": "story_1",
+    "src": "/audio/story_1.mp3",
+    "durationSeconds": 42.38,
+    "bytes": 127703,
+    "sha256": "06277d894d3e25092f86c82411e8d52e1ef2109e2de82884fcfece3af0dd8fb1",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  },
+  {
+    "id": "story_2",
+    "src": "/audio/story_2.mp3",
+    "durationSeconds": 45.58,
+    "bytes": 137264,
+    "sha256": "d958a2710dc205db9121253d81885bcaafa34dc39d9758b83616fc2d902f10fb",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  },
+  {
+    "id": "story_3",
+    "src": "/audio/story_3.mp3",
+    "durationSeconds": 45.55,
+    "bytes": 137186,
+    "sha256": "5af0f57760ba74d3f490891eefb1fb83352d490cdd0c918daad74e06aaed50b7",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  },
+  {
+    "id": "story_4",
+    "src": "/audio/story_4.mp3",
+    "durationSeconds": 45.28,
+    "bytes": 136402,
+    "sha256": "ae1a3574b8f11d42f7e8399d39e1127d9bf76ed7c9f91ed1ec589b8614bf8e2c",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  },
+  {
+    "id": "story_5",
+    "src": "/audio/story_5.mp3",
+    "durationSeconds": 45.96,
+    "bytes": 138439,
+    "sha256": "c4c65e0d8a241492ac370153d426ed9f1118788f1c7337f3c81ee0658ef6a020",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  },
+  {
+    "id": "story_6",
+    "src": "/audio/story_6.mp3",
+    "durationSeconds": 45.57,
+    "bytes": 137264,
+    "sha256": "9647b850494e6040eeaf23b547a3e1689a9c06319defdd5ca3a34cb2e3ff96f3",
+    "engine": "Windows System.Speech / Microsoft Huihui Desktop",
+    "rate": -1,
+    "kind": "synthetic",
+    "generatedAt": "2026-09-20",
+    "disclosure": "AI 合成讲解，非真人口述"
+  }
+]

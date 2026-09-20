@@ -185,3 +185,9 @@
 .care-mode .category-item { box-sizing: border-box; padding: 20rpx 28rpx; }
 .care-mode .audio-btn-play { width: 96rpx; height: 96rpx; }
 .care-mode .play-icon { font-size: 42rpx; }
+.audio-disclosure { margin: 0 28rpx 18rpx; padding: 18rpx; background: #fff1d9; color: #765025; font-size: 24rpx; border-radius: 14rpx; }
+.listen-button { margin: 18rpx 0 0; padding: 14rpx 20rpx; background: #fff0e8; color: #9d1620; font-size: 26rpx; border-radius: 14rpx; }
+.audio-script { margin-top: 18rpx; padding-top: 16rpx; border-top: 1rpx solid #e6d5ce; color: #604e42; font-size: 25rpx; line-height: 1.8; }
+.audio-script > text { display: block; }
+.audio-script-heading { font-weight: 700; margin-bottom: 8rpx; }
+.care-mode .audio-disclosure, .care-mode .audio-script { font-size: 31rpx; }

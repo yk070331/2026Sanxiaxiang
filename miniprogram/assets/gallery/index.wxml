@@ -1,5 +1,10 @@
 <!--pages/photo-gallery/index.wxml - 实景相册页-->
 <view class="container">
+  <view class="gallery-intro">
+    <text class="gallery-heading">用影像认识井冈山与乔林</text>
+    <text class="gallery-note">已收录 {{availableCount}} 张。开放图片来自井冈山区域，地点与拍摄来源均单独标注。</text>
+    <button wx:if="{{pendingCount}}" class="pending-toggle" bindtap="onTogglePending">{{showPending ? '收起待采集项' : '查看待采集清单'}}（{{pendingCount}}项）</button>
+  </view>
   <!-- 分类筛选 -->
   <scroll-view class="category-bar" scroll-x="true" enable-flex>
     <view
@@ -47,6 +52,9 @@
         <text class="photo-title">{{photo.title}}</text>
         <text class="photo-desc">{{photo.desc}}</text>
         <text class="photo-date">{{photo.date}}</text>
+        <text class="photo-scope" wx:if="{{photo.scopeLabel}}">{{photo.scopeLabel}}</text>
+        <text class="photo-credit" wx:if="{{photo.license}}">{{photo.creator}} · {{photo.license}}</text>
+        <text class="photo-credit" wx:elif="{{!photo.available}}">待采集实景照片</text>
       </view>
     </view>
   </view>
@@ -78,10 +86,21 @@
           </view>
         </swiper-item>
       </swiper>
-      <view class="preview-info" wx:if="{{previewItems[previewIndex]}}">
+      <scroll-view scroll-y class="preview-info" wx:if="{{previewItems[previewIndex]}}">
         <text class="preview-title">{{previewItems[previewIndex].title}}</text>
         <text class="preview-desc">{{previewItems[previewIndex].desc}}</text>
-      </view>
+        <view class="preview-credit" wx:if="{{previewItems[previewIndex].license}}">
+          <text>摄影：{{previewItems[previewIndex].creator}} · {{previewItems[previewIndex].license}}</text>
+          <text>{{previewItems[previewIndex].changes}}</text>
+          <text>图片按原许可提供，改编图须遵守相同许可。</text>
+          <text selectable="true">来源：{{previewItems[previewIndex].sourceUrl}}</text>
+          <text selectable="true">许可：{{previewItems[previewIndex].licenseUrl}}</text>
+          <view class="credit-actions">
+            <button data-field="sourceUrl" bindtap="onCopyCredit">复制图片来源</button>
+            <button data-field="licenseUrl" bindtap="onCopyCredit">复制许可链接</button>
+          </view>
+        </view>
+      </scroll-view>
     </view>
   </view>
 

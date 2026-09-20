@@ -3,6 +3,9 @@
  * 数据来源：驻村实地采集
  */
 
+const openPhotos = require('./openPhotos.js');
+const narrationScripts = require('./narrationScripts.js');
+
 // ==================== 地图标记点 ====================
 // 微信 map/openLocation 在中国大陆使用 GCJ-02 坐标。
 // 乔林村村委会与乔林水库可达入口坐标来自腾讯地图分享位置（GCJ-02）；
@@ -282,9 +285,19 @@ const redStories = [
   }
 ];
 
-// 当前仓库未包含口述音频；上传对应 MP3 后，将单条故事的 audioAvailable 改为 true。
+// 合成导览单独记录来源与稿件，不能冒充原始口述录音。
 redStories.forEach(story => {
-  story.audioAvailable = false;
+  const narration = narrationScripts.find(item => item.id === story.id);
+  story.audioAvailable = Boolean(narration);
+  if (narration) {
+    story.audio = `/audio/${story.id}.mp3`;
+    story.audioDuration = '简短导览';
+    story.audioKind = 'synthetic';
+    story.audioSourceLabel = 'AI 合成讲解 · 普通话导览（非真人口述）';
+    story.audioScript = narration.text;
+    story.audioReferenceTitle = narration.sourceTitle;
+    story.audioReferenceUrl = narration.sourceUrl;
+  }
 });
 
 // ==================== 实景相册 ====================
@@ -563,6 +576,7 @@ const photoGallery = [
 ];
 
 // 尚未上传对应实景图的条目保留占位状态，避免打开空白预览。
+photoGallery.push(...openPhotos);
 photoGallery.forEach(photo => {
   if (typeof photo.available !== 'boolean') {
     photo.available = false;
