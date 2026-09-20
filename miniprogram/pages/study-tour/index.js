@@ -1,5 +1,6 @@
 // pages/study-tour/index.js
-const { studyTour, routePresets, mapPlaces } = require('../../utils/data.js');
+const { studyTour, routePresets, mapPlaces, redVillages } = require('../../utils/data.js');
+const { hasCoordinates, arrivalFor, navigateWithArrival, openDestination } = require('../../utils/navigation.js');
 const { flushPendingCheckIns, syncCheckIn } = require('../../utils/visitorSync.js');
 const CHECK_IN_STORAGE_KEY = 'qiaolinStudyTourCheckIns';
 
@@ -13,6 +14,8 @@ Page({
     siteSegments: [],
     careMode: false,
     activePresetId: '',
+    routeChoices: [{ id: '', title: '完整研学线（约2小时）' }, ...routePresets],
+    routeChoiceIndex: 0,
     certificateVisible: false,
     certificateImage: '',
     certificateDate: '',
@@ -31,7 +34,7 @@ Page({
     try { wx.setStorageSync('qiaolinActiveRoutePreset', preset ? preset.id : ''); }
     catch (error) { wx.showToast({ title: '路线已打开，暂未保存选择', icon: 'none' }); }
     const reservoir = mapPlaces.find(place => place.id === 'place_qiaolin_reservoir');
-    const segments = preset
+    const selectedSegments = preset
       ? preset.segmentIds.map(segmentId => {
         if (segmentId === 'nature_reservoir' && reservoir) {
           return {
@@ -48,6 +51,15 @@ Page({
         return studyTour.segments.find(segment => segment.id === segmentId);
       }).filter(Boolean)
       : studyTour.segments;
+    const village = redVillages.find(item => item.id === 'village_1');
+    let stopNumber = 0;
+    const segments = selectedSegments.map(segment => {
+      const site = village.sites.find(item => item.id === segment.siteId);
+      const target = site ? { ...segment, latitude: site.latitude, longitude: site.longitude } : { ...segment };
+      if (target.type === 'site') stopNumber += 1;
+      return { ...target, canNavigate: hasCoordinates(target), stopNumber,
+        displayName: target.name.replace(/^(起点|终点|第[一二三四五六]站)：/, '') };
+    });
     const activeTour = preset
       ? {
         ...studyTour,
@@ -58,7 +70,7 @@ Page({
         description: preset.summary,
         segments
       }
-      : studyTour;
+      : { ...studyTour, segments };
 
     // 计算仅站点（排除起点终点）
     const siteSegments = activeTour.segments.filter(segment => segment.type === 'site');
@@ -78,6 +90,7 @@ Page({
       checkInCount: Object.keys(checkedIn).length,
       careMode: Boolean(getApp().globalData.careMode),
       activePresetId: preset ? preset.id : '',
+      routeChoiceIndex: preset ? routePresets.findIndex(route => route.id === preset.id) + 1 : 0,
       nextSiteId: nextSite ? nextSite.id : '',
       nextSiteName: nextSite ? nextSite.name : '全部旧址已完成'
     });
@@ -99,6 +112,13 @@ Page({
     this.entryAction = '';
     if (action === 'next') this.onNavigateToNext();
     if (action === 'certificate') this.onShowCertificate();
+  },
+
+  onRouteChange(e) {
+    if (this.data.generatingCertificate) return;
+    const choice = this.data.routeChoices[Number(e.detail.value)];
+    if (!choice || choice.id === this.data.activePresetId) return;
+    wx.redirectTo({ url: `/pages/study-tour/index?preset=${encodeURIComponent(choice.id)}` });
   },
 
   // 切换当前查看的站点段
@@ -230,52 +250,25 @@ Page({
     }
     const segmentIndex = this.data.tour.segments.findIndex(item => item.id === segment.id);
     if (segmentIndex >= 0) this.setData({ currentSegment: segmentIndex });
-    if (!Number.isFinite(segment.latitude) || !Number.isFinite(segment.longitude)) {
-      wx.showModal({
-        title: `下一站：${segment.name}`,
-        content: '已切换到下一站卡片。该旧址坐标仍待腾讯地图分享位置核验，当前不提供推测导航。',
-        showCancel: false
-      });
-      return;
-    }
-    this.openSegmentLocation(segment);
+    navigateWithArrival(segment, arrivalFor(redVillages.find(item => item.id === 'village_1')), `下一站：${segment.name}`);
   },
 
   openSegmentLocation(segment) {
-    wx.openLocation({
-      latitude: segment.latitude,
-      longitude: segment.longitude,
-      name: segment.name,
-      address: '江西省吉安市井冈山市茅坪镇乔林村',
-      scale: 17
-    });
+    openDestination(segment);
   },
 
   // 一键导航到当前站点
   onNavigateToSegment(e) {
     const segmentId = e.currentTarget.dataset.id;
     const segment = this.data.tour.segments.find(item => item.id === segmentId);
-    if (!segment || !Number.isFinite(segment.latitude) || !Number.isFinite(segment.longitude)) {
-      wx.showToast({ title: '该点位坐标待核验', icon: 'none' });
-      return;
-    }
-    this.openSegmentLocation(segment);
+    if (!segment) return;
+    navigateWithArrival(segment, arrivalFor(redVillages.find(item => item.id === 'village_1')));
   },
 
   // 导航到路线起点
   onNavigateToStart() {
     const start = this.data.tour.segments[0];
-    if (!start || !Number.isFinite(start.latitude) || !Number.isFinite(start.longitude)) {
-      wx.showToast({ title: '路线起点坐标待核验', icon: 'none' });
-      return;
-    }
-    wx.openLocation({
-      latitude: start.latitude,
-      longitude: start.longitude,
-      name: start.name,
-      address: '江西省吉安市井冈山市茅坪镇乔林村',
-      scale: 17
-    });
+    navigateWithArrival(start, arrivalFor(redVillages.find(item => item.id === 'village_1')));
   },
 
   onGoToRouteRecommend() {

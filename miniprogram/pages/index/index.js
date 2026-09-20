@@ -1,5 +1,6 @@
 // pages/index/index.js
 const { redLandmarks, redVillages, mapPlaces } = require('../../utils/data.js');
+const { locationFailure, openDestination } = require('../../utils/navigation.js');
 const qiaolinVillage = redVillages.find(village => village.id === 'village_1');
 const DEFAULT_CENTER = {
   latitude: qiaolinVillage ? qiaolinVillage.latitude : 26.620306,
@@ -308,13 +309,7 @@ Page({
       wx.showToast({ title: '该点位坐标待核验', icon: 'none' });
       return;
     }
-    wx.openLocation({
-      latitude: place.latitude,
-      longitude: place.longitude,
-      name: place.name,
-      address: place.address || '江西省吉安市井冈山市茅坪镇乔林村',
-      scale: 17
-    });
+    openDestination(place);
   },
 
   /**
@@ -356,8 +351,17 @@ Page({
           showPopup: false
         });
       },
-      fail: () => {
-        wx.showToast({ title: '请允许位置权限后重试', icon: 'none' });
+      fail: error => {
+        const issue = locationFailure(error);
+        wx.showModal({
+          title: '当前位置暂不可用', content: issue.message,
+          confirmText: issue.settings ? '去设置' : '知道了', showCancel: issue.settings,
+          success: result => {
+            if (result.confirm && issue.settings) wx.openSetting({
+              success: setting => { if (setting.authSetting && setting.authSetting['scope.userLocation']) this.onLocateMe(); }
+            });
+          }
+        });
       }
     });
   },

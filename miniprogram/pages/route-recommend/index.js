@@ -71,6 +71,7 @@ function resolveStopName(segmentId) {
 
 Page({
   data: {
+    routeChoices: routePresets.map(route => ({ ...route, stopNames: route.segmentIds.map(resolveStopName) })),
     careMode: false,
     selections: {
       durationValue: '60',
@@ -136,6 +137,11 @@ Page({
     wx.navigateTo({
       url: `/pages/study-tour/index?preset=${encodeURIComponent(route.id)}`
     });
+  },
+
+  onSelectRoute(e) {
+    const route = routePresets.find(item => item.id === e.currentTarget.dataset.id);
+    if (route) wx.navigateTo({ url: `/pages/study-tour/index?preset=${encodeURIComponent(route.id)}` });
   },
 
   onToggleCare() {

@@ -1,5 +1,6 @@
 // pages/site-detail/index.js
 const { redLandmarks, redVillages, redStories } = require('../../utils/data.js');
+const { hasCoordinates, arrivalFor, navigateWithArrival } = require('../../utils/navigation.js');
 
 function safeDecode(value) {
   if (!value) return '';
@@ -68,7 +69,7 @@ Page({
       s.relatedSite && site && s.relatedSite === site.name
     );
 
-    const canNavigate = Number.isFinite(site.latitude) && Number.isFinite(site.longitude);
+    const canNavigate = hasCoordinates(site);
     this.setData({ site, source, relatedStories, canNavigate });
   },
 
@@ -84,22 +85,8 @@ Page({
   onNavigate() {
     const s = this.data.site;
     if (!s) return;
-    if (!this.data.canNavigate) {
-      wx.showModal({
-        title: '坐标待核验',
-        content: '该旧址还没有经过现场核验的坐标，暂不提供导航，避免把游客带到错误位置。',
-        showCancel: false,
-        confirmText: '知道了'
-      });
-      return;
-    }
-    wx.openLocation({
-      latitude: s.latitude,
-      longitude: s.longitude,
-      name: s.name,
-      address: s.address || '江西省吉安市井冈山市茅坪镇',
-      scale: 18
-    });
+    const village = redVillages.find(item => item.id === s.villageId);
+    navigateWithArrival(s, arrivalFor(village));
   },
 
   // 跳转实景相册

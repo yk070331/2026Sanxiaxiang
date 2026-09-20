@@ -2,14 +2,21 @@
 <view class="container {{careMode ? 'care-mode' : ''}}">
   <view class="recommend-hero">
     <view>
-      <text class="hero-title">为你推荐研学路线</text>
-      <text class="hero-desc">选择时间、主题和游客类型，系统将匹配最合适的预设路线</text>
+      <text class="hero-title">选择研学路线</text>
+      <text class="hero-desc">直接选择一条路线，或按下方偏好获取推荐</text>
     </view>
     <button class="care-toggle" bindtap="onToggleCare">
       {{careMode ? '标准模式' : '关怀模式'}}
     </button>
   </view>
 
+  <view class="result-card" wx:for="{{routeChoices}}" wx:key="id" wx:for-item="route">
+    <text class="result-title">{{route.title}}</text>
+    <text class="result-summary">{{route.summary}}</text>
+    <view class="result-stats"><text>{{route.duration}}（建议）</text><text>{{route.distance}}</text></view>
+    <button class="btn-primary btn-full" data-id="{{route.id}}" bindtap="onSelectRoute">选择{{route.title}}</button>
+  </view>
+  <view class="option-card"><text class="option-title">需要推荐？按偏好筛选</text><text class="coordinate-note">以上为研学内容安排，旧址位置尚待核验。当前可导航到村委会集合点及乔林水库入口。</text></view>
   <view class="option-card" wx:for="{{optionGroups}}" wx:key="id" wx:for-item="group">
     <text class="option-title">{{group.name}}</text>
     <view class="option-list">

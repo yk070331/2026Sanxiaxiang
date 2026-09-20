@@ -590,15 +590,18 @@ const studyTour = {
   totalDistance: '规划约2.3公里（待实测）',
   estimatedTime: '约2小时',
   difficulty: '轻松（含少量缓坡）',
-  description: '本路线串联乔林村6处红色旧址，途经古村落核心区和自然景观带，全面展示乔林村的红色历史、古村风貌和自然生态。建议从村口古樟树出发，按顺序依次打卡。',
+  description: '本路线为6处旧址的研学内容规划。先到乔林村委会集合，再按现场开放情况开展研学；旧址位置、路程与耗时待实地核验。',
   segments: [
     {
       id: 'seg_1',
       order: 1,
-      name: '起点：村口古樟树',
+      name: '起点：乔林村委会（到村集合点）',
       type: 'start',
-      description: '500年树龄的古樟树是乔林村的标志，树下立有"乔林村简介"牌，可在此集合、了解村庄概况。',
-      tips: '请注意保护古树，不要在树干上刻画。'
+      latitude: redVillages[0].latitude,
+      longitude: redVillages[0].longitude,
+      coordinateSource: redVillages[0].coordinateSource,
+      description: '导航到已按腾讯地图分享位置核准的乔林村委会。此处作为到村集合点，不代表任何旧址的准确位置。',
+      tips: '到村后向工作人员确认旧址位置与开放情况，再按现场标识通行。'
     },
     {
       id: 'seg_2',

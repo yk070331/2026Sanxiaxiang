@@ -160,7 +160,7 @@
 
 .progress-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12rpx;
   margin-top: 20rpx;
 }
@@ -461,3 +461,13 @@
   gap: 16rpx;
   margin-top: 22rpx;
 }
+.progress-actions .progress-btn { width: 100%; min-width: 0; white-space: normal; box-sizing: border-box; }
+.care-mode .progress-actions { grid-template-columns: 1fr; }
+.next-stop-row .next-stop-button { width: auto; }
+
+.route-switch-panel { padding: 24rpx 28rpx; background: #FFF8EE; }
+.route-switch-title { display: block; color: #8B0000; font-size: 30rpx; font-weight: 700; }
+.route-switch-button { padding: 20rpx; margin: 14rpx 0; background: #FFF; border: 2rpx solid #CC0000; border-radius: 16rpx; color: #8B0000; font-size: 30rpx; }
+.route-switch-note { display: block; color: #755E47; font-size: 24rpx; line-height: 1.6; margin-bottom: 16rpx; }
+.care-mode .route-switch-note { font-size: 30rpx; }
+.route-switch-panel .btn-primary { width: 100%; }

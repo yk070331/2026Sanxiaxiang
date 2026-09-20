@@ -80,7 +80,7 @@
       ✎ 我要纠错
     </navigator>
     <button class="btn-primary" bindtap="onNavigate">
-      {{canNavigate ? '🧭 导航到此地' : '📍 坐标待核验'}}
+      {{canNavigate ? '🧭 导航到此地' : '📍 到访指引'}}
     </button>
   </view>
 </view>

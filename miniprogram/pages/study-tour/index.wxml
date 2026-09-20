@@ -1,5 +1,13 @@
 <!--pages/study-tour/index.wxml - 研学路线页-->
 <view class="container {{careMode ? 'care-mode' : ''}}">
+  <view class="route-switch-panel">
+    <text class="route-switch-title">选择 / 切换研学路线</text>
+    <picker range="{{routeChoices}}" range-key="title" value="{{routeChoiceIndex}}" bindchange="onRouteChange" disabled="{{generatingCertificate}}">
+      <view class="route-switch-button">{{routeChoices[routeChoiceIndex].title}}　⌄</view>
+    </picker>
+    <text class="route-switch-note">30分钟、60分钟、半日及完整线可选；切换保留已打卡站点。</text>
+    <button class="btn-primary" bindtap="onNavigateToStart">🧭 先导航到村委会集合点</button>
+  </view>
   <!-- 路线概览头 -->
   <view class="tour-hero">
     <view class="tour-hero-bg"></view>
@@ -70,12 +78,12 @@
             <text wx:if="{{seg.type === 'start'}}">🏁 起点</text>
             <text wx:elif="{{seg.type === 'end'}}">🏁 终点</text>
             <text wx:elif="{{seg.type === 'nature'}}">💧 生态点</text>
-            <text wx:else>🔴 第{{seg.order - 1}}站</text>
+            <text wx:else>🔴 第{{seg.stopNumber}}站</text>
           </view>
 
           <!-- 站点名称和距离 -->
           <view class="seg-header">
-            <text class="seg-name">{{seg.name}}</text>
+            <text class="seg-name">{{seg.displayName}}</text>
             <text class="seg-distance" wx:if="{{seg.distance}}">{{seg.distance}}</text>
           </view>
 
@@ -95,7 +103,7 @@
               data-id="{{seg.id}}"
               bindtap="onNavigateToSegment"
             >
-              🧭 导航到此
+              {{seg.canNavigate ? '🧭 导航到此' : '📍 到访指引'}}
             </button>
             <button
               wx:if="{{seg.type === 'site'}}"
@@ -131,8 +139,8 @@
         data-id="{{seg.id}}"
         bindtap="onSegmentTap"
       >
-        <text class="seg-nav-num">{{seg.type === 'start' ? '起' : (seg.type === 'end' ? '终' : seg.order - 1)}}</text>
-        <text class="seg-nav-name">{{seg.name}}</text>
+        <text class="seg-nav-num">{{seg.type === 'start' ? '起' : (seg.type === 'end' ? '终' : (seg.type === 'nature' ? '景' : seg.stopNumber))}}</text>
+        <text class="seg-nav-name">{{seg.displayName}}</text>
       </view>
     </scroll-view>
   </view>

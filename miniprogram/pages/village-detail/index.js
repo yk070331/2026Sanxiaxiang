@@ -1,5 +1,6 @@
 // pages/village-detail/index.js
-const { redVillages, redStories, mapPlaces } = require('../../utils/data.js');
+const { redVillages, redStories, mapPlaces, routePresets } = require('../../utils/data.js');
+const { hasCoordinates, locationFailure, arrivalFor, openDestination, navigateWithArrival } = require('../../utils/navigation.js');
 const {
   distanceKm,
   formatDistance,
@@ -21,6 +22,8 @@ Page({
     careMode: false,
     isOnline: true,
     locating: false,
+    locationSettingsNeeded: false,
+    routeChoices: routePresets,
     distanceText: '点击测算',
     walkTimeText: '待定位',
     driveTimeText: '待定位',
@@ -40,7 +43,7 @@ Page({
     );
     const app = getApp();
     this.setData({
-      village,
+      village: { ...village, sites: (village.sites || []).map(site => ({ ...site, canNavigate: hasCoordinates(site) })) },
       relatedStories,
       careMode: Boolean(app.globalData.careMode),
       isOnline: app.globalData.isOnline !== false
@@ -94,6 +97,13 @@ Page({
     });
   },
 
+  onSelectRoute(e) {
+    const id = e.currentTarget.dataset.id;
+    if (routePresets.some(route => route.id === id)) {
+      wx.navigateTo({ url: `/pages/study-tour/index?preset=${encodeURIComponent(id)}` });
+    }
+  },
+
   // 跳转到村情信息
   onGoToVillageInfo() {
     wx.navigateTo({
@@ -118,25 +128,16 @@ Page({
     const site = siteId && v.sites
       ? v.sites.find(item => item.id === siteId)
       : null;
-    const target = site || v;
-    if (!Number.isFinite(target.latitude) || !Number.isFinite(target.longitude)) {
-      wx.showToast({ title: '该点位坐标待核验', icon: 'none' });
-      return;
-    }
-    wx.openLocation({
-      latitude: target.latitude,
-      longitude: target.longitude,
-      name: target.name,
-      address: `江西省吉安市井冈山市${v.town}${v.name}`,
-      scale: site ? 18 : 16
-    });
+    if (siteId && !site) return;
+    const arrival = arrivalFor(v);
+    navigateWithArrival(site || arrival, arrival);
   },
 
   // 获取游客位置并估算到村距离。时间为本地估算，实时路线以地图导航为准。
   onLocateMe() {
     const village = this.data.village;
     if (!village || this.data.locating) return;
-    this.setData({ locating: true, distanceText: '待定位', walkTimeText: '待定位', driveTimeText: '待定位', locationMessage: '正在获取当前位置…' });
+    this.setData({ locating: true, locationSettingsNeeded: false, distanceText: '待定位', walkTimeText: '待定位', driveTimeText: '待定位', locationMessage: '正在获取当前位置…' });
     wx.getLocation({
       type: 'gcj02',
       success: location => {
@@ -157,27 +158,29 @@ Page({
         });
       },
       fail: error => {
-        const denied = /auth deny|auth denied|authorize|permission/i.test(error && error.errMsg || '');
+        const issue = locationFailure(error);
         this.setData({
           locating: false,
           distanceText: '待定位', walkTimeText: '待定位', driveTimeText: '待定位',
-          locationMessage: denied ? '未获得位置权限，请在小程序设置中允许定位' : '定位暂不可用，请检查系统定位和网络后重试'
+          locationMessage: issue.message,
+          locationSettingsNeeded: issue.settings
         });
-        wx.showToast({ title: denied ? '请允许位置权限后重试' : '定位失败，请稍后重试', icon: 'none' });
+        wx.showToast({ title: '定位未完成，请查看提示', icon: 'none' });
       }
+    });
+  },
+
+  onOpenLocationSettings() {
+    wx.openSetting({
+      success: result => { if (result.authSetting && result.authSetting['scope.userLocation']) this.onLocateMe(); },
+      fail: () => wx.showToast({ title: '请从右上角菜单打开设置', icon: 'none' })
     });
   },
 
   onNavigateToReservoir() {
     const reservoir = mapPlaces.find(place => place.id === 'place_qiaolin_reservoir');
     if (!reservoir) return;
-    wx.openLocation({
-      latitude: reservoir.latitude,
-      longitude: reservoir.longitude,
-      name: reservoir.name,
-      address: reservoir.address,
-      scale: 17
-    });
+    openDestination(reservoir);
   },
 
   onToggleCare() {

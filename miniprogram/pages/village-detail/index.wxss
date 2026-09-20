@@ -356,3 +356,12 @@
   grid-template-columns: 1fr 1fr;
   gap: 16rpx;
 }
+
+.arrival-card, .route-choice-panel { margin: 20rpx 28rpx; padding: 24rpx; border-radius: 20rpx; background: #FFF; border: 2rpx solid #E9D4AF; }
+.arrival-title { display: block; font-size: 32rpx; font-weight: 700; color: #8B0000; }
+.arrival-note, .coordinate-status { display: block; font-size: 24rpx; line-height: 1.6; color: #795E3D; margin: 12rpx 0; }
+.arrival-card .btn-primary, .arrival-card .btn-outline { margin-top: 16rpx; white-space: normal; width: 100%; }
+.route-choice-panel .route-choice { margin: 14rpx 0 0; width: 100%; text-align: left; padding: 18rpx 24rpx; line-height: 1.5; background: #FFF2DF; color: #8B0000; font-size: 28rpx; }
+.care-mode .arrival-note, .care-mode .coordinate-status, .care-mode .route-choice { font-size: 30rpx; }
+.site-info { min-width: 0; }
+.site-actions { flex-shrink: 0; }
